@@ -50,6 +50,10 @@ if [ $downloadMaps == "yes" ]; then
   do
     # -N only redownloads if timestamp/filesize is newer/different
     $wget -N --no-check-certificate $webDir/$map
+    if [ $? -ne 0 ]; then
+        echo "ERROR:  Failed to download map:  $map"
+        exit 1
+    fi
   done
   cd -
 fi
