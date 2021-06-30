@@ -1,16 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.jlab.rec.rich;
+package org.jlab.detector.geom.RICH;
 
-import org.jlab.detector.geom.RICH.RICHComponent;
-import org.jlab.detector.geom.RICH.RICHIntersection;
-import org.jlab.detector.geom.RICH.RICHFrame;
-import org.jlab.detector.geom.RICH.RICHLayer;
-import java.io.FileReader;
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +11,9 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import eu.mihosoft.vrl.v3d.Vertex;
 import eu.mihosoft.vrl.v3d.Polygon;   
 import eu.mihosoft.vrl.v3d.CSG;   
+import java.util.Arrays;
+import java.util.Optional;
+import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.geometry.prim.Line3d;   
 
 import org.jlab.geom.prim.Vector3D;
@@ -40,222 +32,237 @@ import org.jlab.utils.groups.IndexedTable;
  *
  * @author mcontalb
  */
-public class RICHTool{
-
-    //------------------------------
-    public void RICHTool(){
-    //------------------------------
-
-    }
+public class RICHGeomFactory{
 
 
-    private final static int anode_map[] = {60,58,59,57,52,50,51,49,44,42,43,41,36,34,35,
-                     33,28,26,27,25,20,18,19,17,12,10,11,9,4,2,3,1,5,7,6,8,13,15,14,16,21,
-                     23,22,24,29,31,30,32,37,39,38,40,45,47,46,48,53,55,54,56,61,63,62,64};
+//    private final static int anode_map[] = {60,58,59,57,52,50,51,49,44,42,43,41,36,34,35,
+//                     33,28,26,27,25,20,18,19,17,12,10,11,9,4,2,3,1,5,7,6,8,13,15,14,16,21,
+//                     23,22,24,29,31,30,32,37,39,38,40,45,47,46,48,53,55,54,56,61,63,62,64};
+//
+//
+//    private final static int tile2pmt[][]={{   1,   2,   3},  
+//                        {   4,   5,   6},  
+//                        {   7,   0,   8},  
+//                        {   9,  10,  11},  
+//                        {  12,   0,  13},  
+//                        {  14,  15,  16},  
+//                        {  17,   0,  18},  
+//                        {  19,  20,  21},  
+//                        {  22,  23,  24},  
+//                        {  25,  26,  27},  
+//                        {  28,  29,  30},  
+//                        {  31,   0,  32},  
+//                        {  33,  34,  35},  
+//                        {  36,  37,  38},  
+//                        {  39,   0,  40},  
+//                        {  41,  42,  43},  
+//                        {  44,  45,  46},  
+//                        {  47,  48,  49},  
+//                        {  50,   0,  51},  
+//                        {  52,  53,  54},  
+//                        {  55,  56,  57},  
+//                        {  58,  59,  60},  
+//                        {  61,  62,  63},  
+//                        {  64,   0,  65},  
+//                        {  66,  67,  68},  
+//                        {  69,  70,  71},  
+//                        {  72,  73,  74},  
+//                        {  75,   0,  76},  
+//                        {  77,  78,  79},  
+//                        {  80,  81,  82},  
+//                        {  83,  84,  85},  
+//                        {  86,  87,  88},  
+//                        {  89,   0,  90},  
+//                        {  91,  92,  93},  
+//                        {  94,  95,  96},  
+//                        {  97,  98,  99},  
+//                        { 100, 101, 102},  
+//                        { 103, 104, 105},  
+//                        { 106,   0, 107},  
+//                        { 108, 109, 110},  
+//                        { 111, 112, 113},  
+//                        { 114, 115, 116},  
+//                        { 117, 118, 119},  
+//                        { 120,   0, 121},  
+//                        { 122, 123, 124},  
+//                        { 125, 126, 127},  
+//                        { 128, 129, 130},  
+//                        { 131, 132, 133},  
+//                        { 134, 135, 136},  
+//                        { 137,   0, 138},  
+//                        { 139, 140, 141},  
+//                        { 142, 143, 144},  
+//                        { 145, 146, 147},  
+//                        { 148, 149, 150},  
+//                        { 151, 152, 153},  
+//                        { 154, 155, 156},  
+//                        { 157,   0, 158},  
+//                        { 159, 160, 161},  
+//                        { 162, 163, 164},  
+//                        { 165, 166, 167},  
+//                        { 168, 169, 170},  
+//                        { 171, 172, 173},  
+//                        { 174,   0, 175},  
+//                        { 176, 177, 178},  
+//                        { 179, 180, 181},  
+//                        { 182, 183, 184},  
+//                        { 185, 186, 187},  
+//                        { 188, 189, 190},  
+//                        { 191, 192, 193},  
+//                        { 194,   0, 195},  
+//                        { 196, 197, 198},  
+//                        { 199, 200, 201},  
+//                        { 202, 203, 204},  
+//                        { 205, 206, 207},  
+//                        { 208, 209, 210},  
+//                        { 211, 212, 213},  
+//                        { 214, 215, 216},  
+//                        { 217,   0, 218},  
+//                        { 219, 220, 221},  
+//                        { 222, 223, 224},  
+//                        { 225, 226, 227},  
+//                        { 228, 229, 230},  
+//                        { 231, 232, 233},  
+//                        { 234, 235, 236},  
+//                        { 237,   0, 238},  
+//                        { 239, 240, 241},  
+//                        { 242, 243, 244},  
+//                        { 245, 246, 247},  
+//                        { 248, 249, 250},  
+//                        { 251, 252, 253},  
+//                        { 254, 255, 256},  
+//                        { 257, 258, 259},  
+//                        { 260,   0, 261},  
+//                        { 262, 263, 264},  
+//                        { 265, 266, 267},  
+//                        { 268, 269, 270},  
+//                        { 271, 272, 273},  
+//                        { 274, 275, 276},  
+//                        { 277, 278, 279},  
+//                        { 280, 281, 282},  
+//                        { 283, 284, 285},  
+//                        { 286,   0, 287},  
+//                        { 288, 289, 290},  
+//                        { 291, 292, 293},  
+//                        { 294, 295, 296},  
+//                        { 297, 298, 299},  
+//                        { 300, 301, 302},  
+//                        { 303, 304, 305},  
+//                        { 306, 307, 308},  
+//                        { 309,   0, 310},  
+//                        { 311, 312, 313},  
+//                        { 314, 315, 316},  
+//                        { 317, 318, 319},  
+//                        { 320, 321, 322},  
+//                        { 323, 324, 325},  
+//                        { 326, 327, 328},  
+//                        { 329, 330, 331},  
+//                        { 332, 333, 334},  
+//                        { 335,   0, 336},  
+//                        { 337, 338, 339},  
+//                        { 340, 341, 342},  
+//                        { 343, 344, 345},  
+//                        { 346, 347, 348},  
+//                        { 349, 350, 351},  
+//                        { 352, 353, 354},  
+//                        { 355, 356, 357},  
+//                        { 358, 359, 360},  
+//                        { 361, 362, 363},  
+//                        { 364,   0, 365},  
+//                        { 366, 367, 368},  
+//                        { 369, 370, 371},  
+//                        { 372, 373, 374},  
+//                        { 375, 376, 377},  
+//                        { 378, 379, 380},  
+//                        { 381, 382, 383},  
+//                        { 384, 385, 386},  
+//                        { 387, 388, 389},  
+//                        { 390,   0, 391},
+//                        { 392, 393, 394},  //tracking station
+//                        { 395, 396, 397}};
+//
+//
+    public int DO_MISALIGNMENT      =   0;
+    public int     APPLY_SURVEY     =   0;        // if 1 apply the survey data for misalignment
 
-
-    private final static int tile2pmt[][]={{   1,   2,   3},  
-                        {   4,   5,   6},  
-                        {   7,   0,   8},  
-                        {   9,  10,  11},  
-                        {  12,   0,  13},  
-                        {  14,  15,  16},  
-                        {  17,   0,  18},  
-                        {  19,  20,  21},  
-                        {  22,  23,  24},  
-                        {  25,  26,  27},  
-                        {  28,  29,  30},  
-                        {  31,   0,  32},  
-                        {  33,  34,  35},  
-                        {  36,  37,  38},  
-                        {  39,   0,  40},  
-                        {  41,  42,  43},  
-                        {  44,  45,  46},  
-                        {  47,  48,  49},  
-                        {  50,   0,  51},  
-                        {  52,  53,  54},  
-                        {  55,  56,  57},  
-                        {  58,  59,  60},  
-                        {  61,  62,  63},  
-                        {  64,   0,  65},  
-                        {  66,  67,  68},  
-                        {  69,  70,  71},  
-                        {  72,  73,  74},  
-                        {  75,   0,  76},  
-                        {  77,  78,  79},  
-                        {  80,  81,  82},  
-                        {  83,  84,  85},  
-                        {  86,  87,  88},  
-                        {  89,   0,  90},  
-                        {  91,  92,  93},  
-                        {  94,  95,  96},  
-                        {  97,  98,  99},  
-                        { 100, 101, 102},  
-                        { 103, 104, 105},  
-                        { 106,   0, 107},  
-                        { 108, 109, 110},  
-                        { 111, 112, 113},  
-                        { 114, 115, 116},  
-                        { 117, 118, 119},  
-                        { 120,   0, 121},  
-                        { 122, 123, 124},  
-                        { 125, 126, 127},  
-                        { 128, 129, 130},  
-                        { 131, 132, 133},  
-                        { 134, 135, 136},  
-                        { 137,   0, 138},  
-                        { 139, 140, 141},  
-                        { 142, 143, 144},  
-                        { 145, 146, 147},  
-                        { 148, 149, 150},  
-                        { 151, 152, 153},  
-                        { 154, 155, 156},  
-                        { 157,   0, 158},  
-                        { 159, 160, 161},  
-                        { 162, 163, 164},  
-                        { 165, 166, 167},  
-                        { 168, 169, 170},  
-                        { 171, 172, 173},  
-                        { 174,   0, 175},  
-                        { 176, 177, 178},  
-                        { 179, 180, 181},  
-                        { 182, 183, 184},  
-                        { 185, 186, 187},  
-                        { 188, 189, 190},  
-                        { 191, 192, 193},  
-                        { 194,   0, 195},  
-                        { 196, 197, 198},  
-                        { 199, 200, 201},  
-                        { 202, 203, 204},  
-                        { 205, 206, 207},  
-                        { 208, 209, 210},  
-                        { 211, 212, 213},  
-                        { 214, 215, 216},  
-                        { 217,   0, 218},  
-                        { 219, 220, 221},  
-                        { 222, 223, 224},  
-                        { 225, 226, 227},  
-                        { 228, 229, 230},  
-                        { 231, 232, 233},  
-                        { 234, 235, 236},  
-                        { 237,   0, 238},  
-                        { 239, 240, 241},  
-                        { 242, 243, 244},  
-                        { 245, 246, 247},  
-                        { 248, 249, 250},  
-                        { 251, 252, 253},  
-                        { 254, 255, 256},  
-                        { 257, 258, 259},  
-                        { 260,   0, 261},  
-                        { 262, 263, 264},  
-                        { 265, 266, 267},  
-                        { 268, 269, 270},  
-                        { 271, 272, 273},  
-                        { 274, 275, 276},  
-                        { 277, 278, 279},  
-                        { 280, 281, 282},  
-                        { 283, 284, 285},  
-                        { 286,   0, 287},  
-                        { 288, 289, 290},  
-                        { 291, 292, 293},  
-                        { 294, 295, 296},  
-                        { 297, 298, 299},  
-                        { 300, 301, 302},  
-                        { 303, 304, 305},  
-                        { 306, 307, 308},  
-                        { 309,   0, 310},  
-                        { 311, 312, 313},  
-                        { 314, 315, 316},  
-                        { 317, 318, 319},  
-                        { 320, 321, 322},  
-                        { 323, 324, 325},  
-                        { 326, 327, 328},  
-                        { 329, 330, 331},  
-                        { 332, 333, 334},  
-                        { 335,   0, 336},  
-                        { 337, 338, 339},  
-                        { 340, 341, 342},  
-                        { 343, 344, 345},  
-                        { 346, 347, 348},  
-                        { 349, 350, 351},  
-                        { 352, 353, 354},  
-                        { 355, 356, 357},  
-                        { 358, 359, 360},  
-                        { 361, 362, 363},  
-                        { 364,   0, 365},  
-                        { 366, 367, 368},  
-                        { 369, 370, 371},  
-                        { 372, 373, 374},  
-                        { 375, 376, 377},  
-                        { 378, 379, 380},  
-                        { 381, 382, 383},  
-                        { 384, 385, 386},  
-                        { 387, 388, 389},  
-                        { 390,   0, 391},
-                        { 392, 393, 394},  //tracking station
-                        { 395, 396, 397}};
-
-
+    public int RICH_DEBUG           =   0;
+    
+    public int     MISA_PMT_PIVOT   =   1;        // if 1 use MAPMT barycenter for rotations
+    public double  MISA_SHIFT_SCALE =   1.0;      // Scale factor for misalignment shifts
+    public double  MISA_ANGLE_SCALE =   1.0;      // Scale factor for misalignment angles
+        
     private final static int NLAY=13;
     private final static int NROW=25;
     private final static int NCOL=56;
     private final static int NPMT=391;
     private final static int NPIX=64;
     private final static int NCOMPO=10;
-
-    private double pmt_timeoff[][] = new double[NPMT][NPIX];
-    private double pmt_timewalk[][] = new double[NPMT][4];
-    private double pixel_gain[][] = new double[NPMT][NPIX];
-    private double pixel_eff[][] = new double[NPMT][NPIX];
-    private int pixel_flag[][] = new int [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
-    private int pixel_ntime[][] = new int [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
-    private double pixel_mtime[][] = new double [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
-    private double pixel_stime[][] = new double [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
-
+//
+//    private double pmt_timeoff[][] = new double[NPMT][NPIX];
+//    private double pmt_timewalk[][] = new double[NPMT][4];
+//    private double pixel_gain[][] = new double[NPMT][NPIX];
+//    private double pixel_eff[][] = new double[NPMT][NPIX];
+//    private int pixel_flag[][] = new int [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
+//    private int pixel_ntime[][] = new int [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
+//    private double pixel_mtime[][] = new double [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
+//    private double pixel_stime[][] = new double [NPMT][NPIX];            // 0 = dead, 1 = ok, 2= hot
+//
     private double aero_refi[][] = new double[4][31];
     private double aero_plan[][] = new double[4][31];
-    private double aero_chele_dir[][][] = new double[4][31][225];
-    private double aero_chele_lat[][][] = new double[4][31][225];
-    private double aero_chele_spe[][][] = new double[4][31][225];
-    private double aero_schele_dir[][][] = new double[4][31][225];
-    private double aero_schele_lat[][][] = new double[4][31][225];
-    private double aero_schele_spe[][][] = new double[4][31][225];
-
+//    private double aero_chele_dir[][][] = new double[4][31][225];
+//    private double aero_chele_lat[][][] = new double[4][31][225];
+//    private double aero_chele_spe[][][] = new double[4][31][225];
+//    private double aero_schele_dir[][][] = new double[4][31][225];
+//    private double aero_schele_lat[][][] = new double[4][31][225];
+//    private double aero_schele_spe[][][] = new double[4][31][225];
+//
     private Vector3D rich_survey_angle  = new Vector3D();
     private Vector3D rich_survey_shift  = new Vector3D();
     private Vector3D layer_misa_angle[][] = new Vector3D[NLAY+1][NCOMPO+1];
     private Vector3D layer_misa_shift[][] = new Vector3D[NLAY+1][NCOMPO+1];
     private RICHFrame rich_frame = new RICHFrame();
     private RICHFrame survey_frame = new RICHFrame();
-
-    private final static int pfirst[] = {1, 7,14,22,31,41,52,64,77, 91,106,122,139,157,176,196,217,239,262,286,311,337,364,392,395};
-    private final static int plast[]  = {6,13,21,30,40,51,63,76,90,105,121,138,156,175,195,216,238,261,285,310,336,363,391,394,397};
-
-    private int nxp[] = new int[397]; // X coordinate of pixel 1 of each mapmt
-    private int nyp[] = new int[397]; // Y coordinate of pixel 1 of each mapmt
-
+//
+//    private final static int pfirst[] = {1, 7,14,22,31,41,52,64,77, 91,106,122,139,157,176,196,217,239,262,286,311,337,364,392,395};
+//    private final static int plast[]  = {6,13,21,30,40,51,63,76,90,105,121,138,156,175,195,216,238,261,285,310,336,363,391,394,397};
+//
+//    private int nxp[] = new int[397]; // X coordinate of pixel 1 of each mapmt
+//    private int nyp[] = new int[397]; // Y coordinate of pixel 1 of each mapmt
+//
     public RICHGeant4Factory richfactory = new RICHGeant4Factory();
 
     private List<RICHLayer> opticlayers = new ArrayList<RICHLayer>();
+//
+//    private RICHPixel MAPMTpixels  = null; 
+//
+//    private final static int NTIME = 10;
+//    private long RICH_START_TIME = (long) 0;
+//    private long RICH_LAST_TIME = (long) 0;
+//    private double richprocess_time[] = new double[NTIME];
+//    private int richprocess_ntimes[] = new int[NTIME];
+//
+//    private RICHConstants reco_constants = new RICHConstants();
 
-    private RICHPixel MAPMTpixels  = null; 
-
-    private final static int NTIME = 10;
-    private long RICH_START_TIME = (long) 0;
-    private long RICH_LAST_TIME = (long) 0;
-    private double richprocess_time[] = new double[NTIME];
-    private int richprocess_ntimes[] = new int[NTIME];
-
-    private RICHConstants reco_constants = new RICHConstants();
+    public RICHGeomFactory() {
+    }
 
     //------------------------------
-    public void init_GeoConstants(int iflag, IndexedTable aeroConstants, IndexedTable misaConstants, IndexedTable paraConstants){
+    public RICHGeomFactory(int iflag, ConstantsManager manager, int run){
     //------------------------------
 
         // generate the tracking layers (0 = only Aerogel and MaPMT for trajectory, 1 = all)
         // start processing time
-        init_ProcessTime();
+//        init_ProcessTime();
+        String[] richTables = new String[]{
+                    "/calibration/rich/aerogel",
+                    "/calibration/rich/misalignments",
+                    "/calibration/rich/parameterss"
+                 };
+        manager.init(Arrays.asList(richTables));
 
+        System.out.format("RICHEBEngine: Load geometry constants from CCDB \n");
+
+     
         // reset alignment constants
         for (int ila=0; ila<NLAY+1; ila++){
             for (int ico=0; ico<NCOMPO+1; ico++){
@@ -264,17 +271,14 @@ public class RICHTool{
             }
         }
     
-        // load constants
-        if(RICHConstants.READ_FROM_FILES==1){
-            init_ConstantsTxT(1);
-            init_ConstantsTxT(3);
-        }else{
-            init_GeoConstantsCCDB(aeroConstants, misaConstants, paraConstants);
-        }
+        init_GeoConstantsCCDB(manager.getConstants(run, "/calibration/rich/parameterss"),
+                              manager.getConstants(run, "/calibration/rich/aerogel"), 
+                              manager.getConstants(run, "/calibration/rich/misalignments"));
+       
 
         if(iflag>0){
             // global pixel coordinat indexes
-            init_GlobalPixelGeo();
+//            init_GlobalPixelGeo();
 
             // RICH survey
             init_Survey();
@@ -285,197 +289,6 @@ public class RICHTool{
 
     } 
 
-    //------------------------------
-    public void init_TimeConstants(IndexedTable timewalkConstants, IndexedTable timeoffConstants, IndexedTable cheleConstants, IndexedTable pixelConstants){
-    //------------------------------
-
-        // load constants
-        if(RICHConstants.READ_FROM_FILES==1){
-            init_ConstantsTxT(2);
-        }else{
-            init_TimeConstantsCCDB(timewalkConstants, timeoffConstants, cheleConstants, pixelConstants);
-        }
-
-    }
-
-
-    //------------------------------
-    public int Maroc2Anode(int channel) {
-    //------------------------------
-
-        // return anode from MAROC channel
-        return anode_map[(channel)%64];
-    }
-
-    //------------------------------
-    public int Tile2PMT(int tile, int channel) {
-    //------------------------------
-
-        // return anode from MAROC channel
-
-        return tile2pmt[tile-1][(int) (channel-1)/64];
-    }
-
-
-    //------------------------------
-    public int Anode2idx(int anode) {
-    //------------------------------
-
-        // return anode idx position within the pmt
-        return (anode-1)%8+1;
-    }
-
-
-    //------------------------------
-    public int Anode2idy(int anode) {
-    //------------------------------
-
-        // return anode idy position within the pmt
-        return 8-(anode-1)/8;
-    }
-
-
-    
-    //------------------------------
-    public int get_Globalidx(int pmt, int anode) {
-    //------------------------------
-    // return global idx on the RICH plane
-
-	if(pmt>391)return nxp[pmt-1]-(Anode2idx(anode)-1); //obsolete for cosmics
-        return nxp[pmt-1]+(Anode2idx(anode)-1);
-    }
-
-
-    //------------------------------
-    public int get_Globalidy(int pmt, int anode) {
-    //------------------------------
-    // return global idy on the RICH plane
-
-        if(pmt>391)return nyp[pmt-1]-(Anode2idy(anode)-1);  //obsolete for cosmics
-        return nyp[pmt-1]+(Anode2idy(anode)-1);
-    }
-
-
-    //------------------------------
-    public RICHConstants get_Constants() {return reco_constants;}
-    //------------------------------
-
-
-    //------------------------------
-    public void init_TimeConstantsCCDB(IndexedTable timewalkConstants, IndexedTable timeoffConstants, IndexedTable cheleConstants, IndexedTable pixelConstants){
-    //------------------------------
-
-        int debugMode = 1;
-
-        /*
-        * TIME_OFFSETs
-        */
-
-        for(int ipmt=0; ipmt<NPMT; ipmt++){
-            for(int ich=0; ich<NPIX; ich++){
-                pmt_timeoff[ipmt][ich] = (float) timeoffConstants.getDoubleValue("offset", 4, ipmt+1, ich+1);
-            }
-            if(debugMode>=1 && reco_constants.RICH_DEBUG>0){
-                if(ipmt<10 || ipmt>380)System.out.format("CCDB RICH TOFF    ipmt %4d  %8.3f (ch1)  %8.3f (ch2)  %8.3f (ch63)  %8.3f (ch64) \n", ipmt+1,
-                   pmt_timeoff[ipmt][0], pmt_timeoff[ipmt][1], pmt_timeoff[ipmt][62], pmt_timeoff[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB RICH TOFF     ....... \n");
-                if(ipmt==390)System.out.format("  \n");
-            }
-        }
-
-        /*
-        *  TIME_WALKs
-        */
-
-        // TODO: time_walk bank definition is wrong
-        for(int ipmt=0; ipmt<NPMT; ipmt++){
-            pmt_timewalk[ipmt][0] = (float) timewalkConstants.getDoubleValue("D0", 4, ipmt+1, 0);
-            pmt_timewalk[ipmt][1] = (float) timewalkConstants.getDoubleValue("m1", 4, ipmt+1, 0);
-            pmt_timewalk[ipmt][2] = (float) Math.abs(timewalkConstants.getDoubleValue("m2", 4, ipmt+1, 0))*(-1.0);
-            pmt_timewalk[ipmt][3] = (float) timewalkConstants.getDoubleValue("T0", 4, ipmt+1, 0);
-            if(debugMode>=1 && reco_constants.RICH_DEBUG>0){
-                if(ipmt<10 || ipmt>380)System.out.format("CCDB RICH TWALK   ipmt %4d  D0 = %8.3f  T0 = %8.3f  m1 = %8.4f  m2 = %8.4f\n", ipmt+1,
-                         pmt_timewalk[ipmt][0], pmt_timewalk[ipmt][1] , pmt_timewalk[ipmt][2], pmt_timewalk[ipmt][3]);
-                if(ipmt==10)System.out.format("CCDB RICH TWALK    ....... \n");
-                if(ipmt==390)System.out.format("  \n");
-            }
-        }
-
-        /*
-        * AEROGEL CALIBRATED OPTCIS (USING ELECTRON CONTROL SAMPLE)
-        */
-
-        int ndo[] = {16,22,31,31};
-        double mrad = reco_constants.MRAD;
-        for (int ila=0; ila<4; ila++){
-            for (int ico=0; ico<ndo[ila]*225; ico++){
-                int itil = (int) ico/225;
-                int iqua  = (int) ico - itil*225;
-
-                aero_chele_dir[ila][itil][iqua] = (float) cheleConstants.getDoubleValue("ch_dir", 4,201+ila,ico+1);
-                aero_chele_lat[ila][itil][iqua] = (float) cheleConstants.getDoubleValue("ch_lat", 4,201+ila,ico+1);
-                aero_chele_spe[ila][itil][iqua] = (float) cheleConstants.getDoubleValue("ch_spe", 4,201+ila,ico+1);
-
-                aero_schele_dir[ila][itil][iqua] = (float) cheleConstants.getDoubleValue("s_dir", 4,201+ila,ico+1);
-                aero_schele_lat[ila][itil][iqua] = (float) cheleConstants.getDoubleValue("s_lat", 4,201+ila,ico+1);
-                aero_schele_spe[ila][itil][iqua] = (float) cheleConstants.getDoubleValue("s_spe", 4,201+ila,ico+1);
-
-                if(debugMode>=1 && reco_constants.RICH_DEBUG>0){
-                    if( (itil<2 || itil>ndo[ila]-3) && (iqua==0 || iqua==224)) {
-                        System.out.format("CCDB RICH CHELE   ila %4d  itile %3d  iq %4d dir = %7.2f  %7.2f  lat = %7.2f  %7.2f  spe = %7.2f  %7.2f \n", 201+ila, itil+1, iqua+1,
-                        aero_chele_dir[ila][itil][iqua]*mrad, aero_schele_dir[ila][itil][iqua]*mrad,
-                        aero_chele_lat[ila][itil][iqua]*mrad, aero_schele_lat[ila][itil][iqua]*mrad,
-                        aero_chele_spe[ila][itil][iqua]*mrad, aero_schele_spe[ila][itil][iqua]*mrad);
-                    }
-                    if(ila==3 && ico==ndo[ila]*225-1)System.out.format("  \n");
-                }
-            }
-        }
-
-        /*
-        * PIXELS
-        */
-
-        for(int ipmt=0; ipmt<NPMT; ipmt++){
-            for(int ich=0; ich<NPIX; ich++){
-                pixel_gain[ipmt][ich] = (float) pixelConstants.getDoubleValue("gain", 4, ipmt+1, ich+1);
-                pixel_eff[ipmt][ich] = (float) pixelConstants.getDoubleValue("efficiency", 4, ipmt+1, ich+1);
-                pixel_flag[ipmt][ich] = (int) pixelConstants.getIntValue("status", 4, ipmt+1, ich+1);
-                
-                pixel_ntime[ipmt][ich] = (int) pixelConstants.getIntValue("N_t", 4, ipmt+1, ich+1);
-                pixel_mtime[ipmt][ich] = (float) pixelConstants.getDoubleValue("mean_t", 4, ipmt+1, ich+1);
-                pixel_stime[ipmt][ich] = (float) pixelConstants.getDoubleValue("sigma_t", 4, ipmt+1, ich+1);
-            }
-            if(debugMode>=1 && reco_constants.RICH_DEBUG>0){
-                if(ipmt<2 || ipmt>388)System.out.format("CCDB PIXEL GAIN    ipmt %4d  %8.2f (ch1)  %8.2f (ch2)  %8.2f (ch63)  %8.2f (ch64) \n", ipmt+1,
-                   pixel_gain[ipmt][0], pixel_gain[ipmt][1], pixel_gain[ipmt][62], pixel_gain[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB PIXEL GAIN     ....... \n");
-
-                if(ipmt<2 || ipmt>388)System.out.format("CCDB PIXEL EFF     ipmt %4d  %8.2f (ch1)  %8.2f (ch2)  %8.2f (ch63)  %8.2f (ch64) \n", ipmt+1,
-                   pixel_eff[ipmt][0], pixel_eff[ipmt][1], pixel_eff[ipmt][62], pixel_eff[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB PIXEL EFF      ....... \n");
-
-                if(ipmt<2 || ipmt>388)System.out.format("CCDB PIXEL STATUS  ipmt %4d  %8d (ch1)  %8d (ch2)  %8d (ch63)  %8d (ch64) \n", ipmt+1,
-                   pixel_flag[ipmt][0], pixel_flag[ipmt][1], pixel_flag[ipmt][62], pixel_flag[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB PIXEL STATUS   ....... \n");
-
-                if(ipmt<2 || ipmt>388)System.out.format("CCDB PIXEL NTIME   ipmt %4d  %8d (ch1)  %8d (ch2)  %8d (ch63)  %8d (ch64) \n", ipmt+1,
-                   pixel_ntime[ipmt][0], pixel_ntime[ipmt][1], pixel_ntime[ipmt][62], pixel_ntime[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB PIXEL NTIME    ....... \n");
-
-                if(ipmt<2 || ipmt>388)System.out.format("CCDB PIXEL MTIME   ipmt %4d  %8.2f (ch1)  %8.2f (ch2)  %8.2f (ch63)  %8.2f (ch64) \n", ipmt+1,
-                   pixel_mtime[ipmt][0], pixel_mtime[ipmt][1], pixel_mtime[ipmt][62], pixel_mtime[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB PIXEL MTIME    ....... \n");
-
-                if(ipmt<2 || ipmt>388)System.out.format("CCDB PIXEL STIME   ipmt %4d  %8.2f (ch1)  %8.2f (ch2)  %8.2f (ch63)  %8.2f (ch64) \n", ipmt+1,
-                   pixel_stime[ipmt][0], pixel_stime[ipmt][1], pixel_stime[ipmt][62], pixel_stime[ipmt][63]);
-                if(ipmt==10)System.out.format("CCDB PIXEL STIME    ....... \n");
-
-                if(ipmt==390)System.out.format("  \n");
-            }
-        }
-
-    }
 
 
     //------------------------------
@@ -488,84 +301,84 @@ public class RICHTool{
         * RECONSTRUCTION PARAMETERS
         */
 
-        reco_constants.DO_MISALIGNMENT             =  paraConstants.getIntValue("flag1", 4, 0, 0); 
-        reco_constants.FORCE_DC_MATCH              =  paraConstants.getIntValue("flag2", 4, 0, 0);
-        reco_constants.MISA_RICH_REF               =  paraConstants.getIntValue("flag3", 4, 0, 0);
-        reco_constants.MISA_PMT_PIVOT              =  paraConstants.getIntValue("flag4", 4, 0, 0);
-        reco_constants.APPLY_SURVEY                =  paraConstants.getIntValue("flag5", 4, 0, 0);
+        DO_MISALIGNMENT             =  paraConstants.getIntValue("flag1", 4, 0, 0); 
+//        reco_constants.FORCE_DC_MATCH              =  paraConstants.getIntValue("flag2", 4, 0, 0);
+//        reco_constants.MISA_RICH_REF               =  paraConstants.getIntValue("flag3", 4, 0, 0);
+        MISA_PMT_PIVOT              =  paraConstants.getIntValue("flag4", 4, 0, 0);
+        APPLY_SURVEY                =  paraConstants.getIntValue("flag5", 4, 0, 0);
+//
+//        reco_constants.DO_ANALYTIC                 =  paraConstants.getIntValue("flag6", 4, 0, 0);
+//        reco_constants.THROW_ELECTRONS             =  paraConstants.getIntValue("flag7", 4, 0, 0);
+//        reco_constants.THROW_PIONS                 =  paraConstants.getIntValue("flag8", 4, 0, 0);
+//        reco_constants.THROW_KAONS                 =  paraConstants.getIntValue("flag9", 4, 0, 0);
+//        reco_constants.THROW_PROTONS               =  paraConstants.getIntValue("flag10", 4, 0, 0);
+//        reco_constants.THROW_PHOTON_NUMBER         =  paraConstants.getIntValue("flag11", 4, 0, 0);
+//        reco_constants.TRACE_PHOTONS               =  paraConstants.getIntValue("flag12", 4, 0, 0);
+//
+//        reco_constants.REDO_RICH_RECO              =  paraConstants.getIntValue("flag13", 4, 0, 0);
+//        reco_constants.DO_MIRROR_HADS              =  paraConstants.getIntValue("flag14", 4, 0, 0);  
+//        reco_constants.DO_CURVED_AERO              =  paraConstants.getIntValue("flag15", 4, 0, 0);  
+//
+//        reco_constants.USE_ELECTRON_ANGLES         =  paraConstants.getIntValue("flag16", 4, 0, 0);
+//        reco_constants.USE_PIXEL_PROPERTIES        =  paraConstants.getIntValue("flag17", 4, 0, 0);
+//        reco_constants.SAVE_THROWS                 =  paraConstants.getIntValue("flag18", 4, 0, 0);
+//        reco_constants.QUADRANT_NUMBER             =  paraConstants.getIntValue("flag19", 4, 0, 0);
+//
+//        reco_constants.GOODHIT_FRAC                =  paraConstants.getDoubleValue("par1", 4, 0, 0);
+//        reco_constants.RICH_DCMATCH_CUT            =  paraConstants.getDoubleValue("par2", 4, 0, 0);
+//        reco_constants.RICH_HITMATCH_RMS           =  paraConstants.getDoubleValue("par3", 4, 0, 0);
+//        reco_constants.RICH_DIRECT_RMS             =  paraConstants.getDoubleValue("par4", 4, 0, 0) / 1000.;
+//        reco_constants.SHOW_PROGRESS_INTERVAL      =  paraConstants.getDoubleValue("par5", 4, 0, 0);
+//        reco_constants.THROW_ASSOCIATION_CUT       =  paraConstants.getDoubleValue("par6", 4, 0, 0);
 
-        reco_constants.DO_ANALYTIC                 =  paraConstants.getIntValue("flag6", 4, 0, 0);
-        reco_constants.THROW_ELECTRONS             =  paraConstants.getIntValue("flag7", 4, 0, 0);
-        reco_constants.THROW_PIONS                 =  paraConstants.getIntValue("flag8", 4, 0, 0);
-        reco_constants.THROW_KAONS                 =  paraConstants.getIntValue("flag9", 4, 0, 0);
-        reco_constants.THROW_PROTONS               =  paraConstants.getIntValue("flag10", 4, 0, 0);
-        reco_constants.THROW_PHOTON_NUMBER         =  paraConstants.getIntValue("flag11", 4, 0, 0);
-        reco_constants.TRACE_PHOTONS               =  paraConstants.getIntValue("flag12", 4, 0, 0);
-
-        reco_constants.REDO_RICH_RECO              =  paraConstants.getIntValue("flag13", 4, 0, 0);
-        reco_constants.DO_MIRROR_HADS              =  paraConstants.getIntValue("flag14", 4, 0, 0);  
-        reco_constants.DO_CURVED_AERO              =  paraConstants.getIntValue("flag15", 4, 0, 0);  
-
-        reco_constants.USE_ELECTRON_ANGLES         =  paraConstants.getIntValue("flag16", 4, 0, 0);
-        reco_constants.USE_PIXEL_PROPERTIES        =  paraConstants.getIntValue("flag17", 4, 0, 0);
-        reco_constants.SAVE_THROWS                 =  paraConstants.getIntValue("flag18", 4, 0, 0);
-        reco_constants.QUADRANT_NUMBER             =  paraConstants.getIntValue("flag19", 4, 0, 0);
-
-        reco_constants.GOODHIT_FRAC                =  paraConstants.getDoubleValue("par1", 4, 0, 0);
-        reco_constants.RICH_DCMATCH_CUT            =  paraConstants.getDoubleValue("par2", 4, 0, 0);
-        reco_constants.RICH_HITMATCH_RMS           =  paraConstants.getDoubleValue("par3", 4, 0, 0);
-        reco_constants.RICH_DIRECT_RMS             =  paraConstants.getDoubleValue("par4", 4, 0, 0) / 1000.;
-        reco_constants.SHOW_PROGRESS_INTERVAL      =  paraConstants.getDoubleValue("par5", 4, 0, 0);
-        reco_constants.THROW_ASSOCIATION_CUT       =  paraConstants.getDoubleValue("par6", 4, 0, 0);
-
-        reco_constants.RICH_DEBUG                  =  paraConstants.getDoubleValue("par7", 4, 0, 0);
-        reco_constants.RICH_TIME_RMS               =  paraConstants.getDoubleValue("par8", 4, 0, 0);
-        reco_constants.MISA_SHIFT_SCALE            =  paraConstants.getDoubleValue("par9", 4, 0, 0);
-        reco_constants.MISA_ANGLE_SCALE            =  paraConstants.getDoubleValue("par10", 4, 0, 0);
+        RICH_DEBUG                  =  (int) paraConstants.getDoubleValue("par7", 4, 0, 0);
+//        reco_constants.RICH_TIME_RMS               =  paraConstants.getDoubleValue("par8", 4, 0, 0);
+        MISA_SHIFT_SCALE            =  paraConstants.getDoubleValue("par9", 4, 0, 0);
+        MISA_ANGLE_SCALE            =  paraConstants.getDoubleValue("par10", 4, 0, 0);
         
         //TODO: check
         //reco_constants.RICH_DEBUG                  =  1.0;
         //reco_constants.QUADRANT_NUMBER             =  5;
         //reco_constants.USE_ELECTRON_ANGLES         =  1;
         //reco_constants.USE_PIXEL_PROPERTIES        =  1;
-        if(debugMode>=1 && reco_constants.RICH_DEBUG>0){   //MC
+        if(debugMode>=1 && RICH_DEBUG>0){   //MC
         //if(debugMode>=1){ 
 
             System.out.format(" \n");
-            System.out.format("CCDB RICH PARA    DO_MISALIGNMENT              %9d \n", reco_constants.DO_MISALIGNMENT); 
-            System.out.format("CCDB RICH PARA    FORCE_DC_MATCH               %9d \n", reco_constants.FORCE_DC_MATCH); 
-            System.out.format("CCDB RICH PARA    MISA_RICH_REF                %9d \n", reco_constants.MISA_RICH_REF); 
-            System.out.format("CCDB RICH PARA    MISA_PMT_PIVOT               %9d \n", reco_constants.MISA_PMT_PIVOT); 
-            System.out.format("CCDB RICH PARA    APPLY_SURVEY                 %9d \n", reco_constants.APPLY_SURVEY); 
+            System.out.format("CCDB RICH PARA    DO_MISALIGNMENT              %9d \n", DO_MISALIGNMENT); 
+//            System.out.format("CCDB RICH PARA    FORCE_DC_MATCH               %9d \n", reco_constants.FORCE_DC_MATCH); 
+//            System.out.format("CCDB RICH PARA    MISA_RICH_REF                %9d \n", reco_constants.MISA_RICH_REF); 
+            System.out.format("CCDB RICH PARA    MISA_PMT_PIVOT               %9d \n", MISA_PMT_PIVOT); 
+            System.out.format("CCDB RICH PARA    APPLY_SURVEY                 %9d \n", APPLY_SURVEY); 
+//
+//            System.out.format("CCDB RICH PARA    DO_ANALYTIC                  %9d \n", reco_constants.DO_ANALYTIC); 
+//            System.out.format("CCDB RICH PARA    THROW_ELECTRONS              %9d \n", reco_constants.THROW_ELECTRONS); 
+//            System.out.format("CCDB RICH PARA    THROW_PIONS                  %9d \n", reco_constants.THROW_PIONS); 
+//            System.out.format("CCDB RICH PARA    THROW_KAONS                  %9d \n", reco_constants.THROW_KAONS); 
+//            System.out.format("CCDB RICH PARA    THROW_PROTONS                %9d \n", reco_constants.THROW_PROTONS); 
+//            System.out.format("CCDB RICH PARA    THROW_PHOTON_NUMBER          %9d \n", reco_constants.THROW_PHOTON_NUMBER); 
+//            System.out.format("CCDB RICH PARA    TRACE_PHOTONS                %9d \n", reco_constants.TRACE_PHOTONS); 
+//
+//            System.out.format("CCDB RICH PARA    REDO_RICH_RECO               %9d \n", reco_constants.REDO_RICH_RECO); 
+//            System.out.format("CCDB RICH PARA    DO_MIRROR_HADS               %9d \n", reco_constants.DO_MIRROR_HADS); 
+//            System.out.format("CCDB RICH PARA    DO_CURVED_AERO               %9d \n", reco_constants.DO_CURVED_AERO); 
+//
+//            System.out.format("CCDB RICH PARA    USE_ELECTRON_ANGLES          %9d \n", reco_constants.USE_ELECTRON_ANGLES); 
+//            System.out.format("CCDB RICH PARA    USE_PIXEL_PROPERTIES         %9d \n", reco_constants.USE_PIXEL_PROPERTIES); 
+//            System.out.format("CCDB RICH PARA    SAVE_THROWS                  %9d \n", reco_constants.SAVE_THROWS);
+//            System.out.format("CCDB RICH PARA    QUADRANT_NUMBER              %9d \n \n", reco_constants.QUADRANT_NUMBER);
+//
+//            System.out.format("CCDB RICH PARA    GOODHIT_FRAC                 %9.4f \n", reco_constants.GOODHIT_FRAC); 
+//            System.out.format("CCDB RICH PARA    RICH_DCMATCH_CUT             %9.4f \n", reco_constants.RICH_DCMATCH_CUT); 
+//            System.out.format("CCDB RICH PARA    RICH_HITMATCH_RMS            %9.4f \n", reco_constants.RICH_HITMATCH_RMS); 
+//            System.out.format("CCDB RICH PARA    RICH_DIRECT_RMS              %9.4f \n", reco_constants.RICH_DIRECT_RMS); 
+//            System.out.format("CCDB RICH PARA    SHOW_PROGRESS_INTERVAL       %9.4f \n", reco_constants.SHOW_PROGRESS_INTERVAL); 
+//            System.out.format("CCDB RICH PARA    THROW_ASSOCIATION_CUT        %9.4f \n", reco_constants.THROW_ASSOCIATION_CUT); 
 
-            System.out.format("CCDB RICH PARA    DO_ANALYTIC                  %9d \n", reco_constants.DO_ANALYTIC); 
-            System.out.format("CCDB RICH PARA    THROW_ELECTRONS              %9d \n", reco_constants.THROW_ELECTRONS); 
-            System.out.format("CCDB RICH PARA    THROW_PIONS                  %9d \n", reco_constants.THROW_PIONS); 
-            System.out.format("CCDB RICH PARA    THROW_KAONS                  %9d \n", reco_constants.THROW_KAONS); 
-            System.out.format("CCDB RICH PARA    THROW_PROTONS                %9d \n", reco_constants.THROW_PROTONS); 
-            System.out.format("CCDB RICH PARA    THROW_PHOTON_NUMBER          %9d \n", reco_constants.THROW_PHOTON_NUMBER); 
-            System.out.format("CCDB RICH PARA    TRACE_PHOTONS                %9d \n", reco_constants.TRACE_PHOTONS); 
-
-            System.out.format("CCDB RICH PARA    REDO_RICH_RECO               %9d \n", reco_constants.REDO_RICH_RECO); 
-            System.out.format("CCDB RICH PARA    DO_MIRROR_HADS               %9d \n", reco_constants.DO_MIRROR_HADS); 
-            System.out.format("CCDB RICH PARA    DO_CURVED_AERO               %9d \n", reco_constants.DO_CURVED_AERO); 
-
-            System.out.format("CCDB RICH PARA    USE_ELECTRON_ANGLES          %9d \n", reco_constants.USE_ELECTRON_ANGLES); 
-            System.out.format("CCDB RICH PARA    USE_PIXEL_PROPERTIES         %9d \n", reco_constants.USE_PIXEL_PROPERTIES); 
-            System.out.format("CCDB RICH PARA    SAVE_THROWS                  %9d \n", reco_constants.SAVE_THROWS);
-            System.out.format("CCDB RICH PARA    QUADRANT_NUMBER              %9d \n \n", reco_constants.QUADRANT_NUMBER);
-
-            System.out.format("CCDB RICH PARA    GOODHIT_FRAC                 %9.4f \n", reco_constants.GOODHIT_FRAC); 
-            System.out.format("CCDB RICH PARA    RICH_DCMATCH_CUT             %9.4f \n", reco_constants.RICH_DCMATCH_CUT); 
-            System.out.format("CCDB RICH PARA    RICH_HITMATCH_RMS            %9.4f \n", reco_constants.RICH_HITMATCH_RMS); 
-            System.out.format("CCDB RICH PARA    RICH_DIRECT_RMS              %9.4f \n", reco_constants.RICH_DIRECT_RMS); 
-            System.out.format("CCDB RICH PARA    SHOW_PROGRESS_INTERVAL       %9.4f \n", reco_constants.SHOW_PROGRESS_INTERVAL); 
-            System.out.format("CCDB RICH PARA    THROW_ASSOCIATION_CUT        %9.4f \n", reco_constants.THROW_ASSOCIATION_CUT); 
-
-            System.out.format("CCDB RICH PARA    RICH_DEBUG                   %9.4f \n", reco_constants.RICH_DEBUG); 
-            System.out.format("CCDB RICH PARA    RICH_TIME_RMS                %9.4f \n", reco_constants.RICH_TIME_RMS); 
-            System.out.format("CCDB RICH PARA    MISA_SHIFT_SCALE             %9.4f \n", reco_constants.MISA_SHIFT_SCALE); 
-            System.out.format("CCDB RICH PARA    MISA_ANGLE_SCALE             %9.4f \n", reco_constants.MISA_ANGLE_SCALE); 
+            System.out.format("CCDB RICH PARA    RICH_DEBUG                   %9.4f \n", RICH_DEBUG); 
+//            System.out.format("CCDB RICH PARA    RICH_TIME_RMS                %9.4f \n", reco_constants.RICH_TIME_RMS); 
+            System.out.format("CCDB RICH PARA    MISA_SHIFT_SCALE             %9.4f \n", MISA_SHIFT_SCALE); 
+            System.out.format("CCDB RICH PARA    MISA_ANGLE_SCALE             %9.4f \n", MISA_ANGLE_SCALE); 
             System.out.format(" \n");
 
         }
@@ -584,8 +397,8 @@ public class RICHTool{
         int tool_ila[] = {0,  1,  2,  3,  4, 11,  5,  6,  9, 10,  7,  8, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 13};
         int tool_ico[] = {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,  0};
 
-        double sscale = reco_constants.MISA_SHIFT_SCALE;
-        double ascale = reco_constants.MISA_ANGLE_SCALE / reco_constants.MRAD;  // to convert in rad
+        double sscale = MISA_SHIFT_SCALE;
+        double ascale = MISA_ANGLE_SCALE / RICHGeoConstants.MRAD;  // to convert in rad
 
         for (int im=0; im<NMISA; im++){
 
@@ -604,7 +417,7 @@ public class RICHTool{
             layer_misa_shift[ila][ico].add( new Vector3D( dx*sscale,  dy*sscale,  dz*sscale));
             layer_misa_angle[ila][ico].add( new Vector3D(thx*ascale, thy*ascale, thz*ascale));
 
-            if(debugMode>=1 && reco_constants.RICH_DEBUG>0){
+            if(debugMode>=1 && RICH_DEBUG>0){
                 //System.out.format("QUA QUA %4d %4d  %d %d  %7.2f %7.2f %7.2f  %7.2f %7.2f \n",ila,ico,lla,cco,dx,dy,dz,
                 //    layer_misa_shift[ila][ico].mag(),layer_misa_angle[ila][ico].mag()*reco_constants.MRAD);
                 if(layer_misa_shift[ila][ico].mag()>0 || layer_misa_angle[ila][ico].mag()>0){
@@ -626,7 +439,7 @@ public class RICHTool{
             for (int ico=0; ico<nco[ila]; ico++){
                 aero_refi[ila][ico] = (float) aeroConstants.getDoubleValue("n400", 4,201+ila,ico+1);
                 aero_plan[ila][ico] = (float) aeroConstants.getDoubleValue("planarity", 4,201+ila, ico+1);
-                if(debugMode>=2 && reco_constants.RICH_DEBUG>0)System.out.format("CCDB RICH AERO    ila %4d  ico %3d  n = %8.5f  pla = %8.2f\n", 201+ila, ico+1, aero_refi[ila][ico], aero_plan[ila][ico]);
+                if(debugMode>=2 && RICH_DEBUG>0)System.out.format("CCDB RICH AERO    ila %4d  ico %3d  n = %8.5f  pla = %8.2f\n", 201+ila, ico+1, aero_refi[ila][ico], aero_plan[ila][ico]);
             }
         }
 
@@ -642,333 +455,6 @@ public class RICHTool{
             }
         }
 
-    }
-
-    //------------------------------
-    public void init_ConstantsTxT(int flag){
-    //------------------------------
-    // To be moved to CCDB
-
-        int debugMode = 1;
-
-       if(flag==2){
-           /**
-            * TIME_OFFSETs
-            */
-            String off_filename = new String("CALIB_DATA/MIRA/richTimeOffsets.out");
-
-            try {
-
-                BufferedReader bf = new BufferedReader(new FileReader(off_filename));
-                String currentLine = null;
-
-                while ( (currentLine = bf.readLine()) != null) {
-
-                    String[] array = currentLine.split(" ");
-                    int ipmt = Integer.parseInt(array[0]);
-                    int ich  = Integer.parseInt(array[1]);
-                    float off = Float.parseFloat(array[4]);
-                    pmt_timeoff[ipmt-1][ich-1] = off;
-
-                    if(debugMode>=1)if(ich==1 || ich==64)
-                              System.out.format("TXT RICH TOFF   pmt %4d (ich=%3d: %8.2f) \n", ipmt, ich, pmt_timeoff[ipmt-1][ich-1]);
-
-                }
-
-            } catch (Exception e) {
-
-                System.err.format("Exception occurred trying to read '%s' \n", off_filename);
-                e.printStackTrace();
-
-            }
-
-
-            /*
-            *  TIME_WALKs
-            */
-            String walk_filename = new String("CALIB_DATA/MIRA/richTimeWalks.out");
-
-            try {
-
-                BufferedReader bf = new BufferedReader(new FileReader(walk_filename));
-                String currentLine = null;
-
-                while ( (currentLine = bf.readLine()) != null) {
-
-                    String[] array = currentLine.split(" ");
-                    int ipmt = Integer.parseInt(array[0]);
-
-                    if(debugMode>=1)System.out.format("TXT WALK   pmt %d", ipmt);
-                    for (int ich=1; ich<5; ich++){
-                        float walk = Float.parseFloat(array[1+(ich-1)*2]);
-                        if(ich==4 && walk<-1000)walk= (float)-0.100;
-                        pmt_timewalk[ipmt-1][ich-1] = walk;
-                        if(debugMode>=1)System.out.format(" (%d, %8.4f) ", ich, pmt_timewalk[ipmt-1][ich-1]);
-                    }
-                    if(debugMode>=1)System.out.format("\n");
-
-                }
-
-            } catch (Exception e) {
-
-                System.err.format("Exception occurred trying to read '%s' \n", walk_filename);
-                e.printStackTrace();
-
-            }
-       }
-
-
-        if(flag==1){
-
-            /*
-            * DC_OFFSETs
-            */
-            String dcoff_filename = new String("CALIB_DATA/DC_offsets_4013.txt");
-
-            try {
-
-                BufferedReader bf = new BufferedReader(new FileReader(dcoff_filename));
-                String currentLine = null;
-
-                while ( (currentLine = bf.readLine()) != null) {    
-
-                    String[] array = currentLine.split(" ");
-                    int idc    = Integer.parseInt(array[0]);
-                    int imatch = Integer.parseInt(array[1]);
-                    int iref   = Integer.parseInt(array[2]);
-                    int ipiv   = Integer.parseInt(array[3]);
-                    int isur   = Integer.parseInt(array[4]);
-
-                    float  ss  = Float.parseFloat(array[5]);
-                    float  sa  = Float.parseFloat(array[6]);
-
-                    int inp    = Integer.parseInt(array[7]);
-                    
-                    float  hr  = Float.parseFloat(array[8]);
-
-                    reco_constants.DO_MISALIGNMENT = idc;
-                    reco_constants.FORCE_DC_MATCH  = imatch;
-                    reco_constants.MISA_RICH_REF   = iref;
-                    reco_constants.MISA_PMT_PIVOT  = ipiv;
-                    reco_constants.APPLY_SURVEY    = isur;
-
-                    reco_constants.MISA_SHIFT_SCALE     = (double) ss ;
-                    reco_constants.MISA_ANGLE_SCALE     = (double) sa;
-
-                    reco_constants.THROW_PHOTON_NUMBER  = inp;
-                    reco_constants.RICH_DIRECT_RMS      = (double) hr / 1000.;
-
-                    if(debugMode>=1){
-
-                        System.out.format("TEXT PARA    DO_MISALIGNMENT              %7d \n", reco_constants.DO_MISALIGNMENT);
-                        System.out.format("TEXT PARA    FORCE_DC_MATCH               %7d \n", reco_constants.FORCE_DC_MATCH);
-                        System.out.format("TEXT PARA    MISA_RICH_REF                %7d \n", reco_constants.MISA_RICH_REF);
-                        System.out.format("TEXT PARA    MISA_PMT_PIVOT               %7d \n", reco_constants.MISA_PMT_PIVOT);
-                        System.out.format("TEXT PARA    APPLY_SURVEY                 %7d \n", reco_constants.APPLY_SURVEY);
-
-                        System.out.format("TEXT PARA    MISA_SHIFT_SCALE             %7.3f \n", reco_constants.MISA_SHIFT_SCALE);
-                        System.out.format("TEXT PARA    MISA_ANGLE_SCALE             %7.3f \n", reco_constants.MISA_ANGLE_SCALE);
-
-                        System.out.format("TEXT PARA    THROW_PHOTON_NUMBER          %7d \n", reco_constants.THROW_PHOTON_NUMBER);
-
-                        System.out.format("TEXT PARA    RICH_DIRECT_RMS              %7.3f (mrad) \n", reco_constants.RICH_DIRECT_RMS*1000);
-
-                    }
-
-                }
-
-            } catch (Exception e) {
-
-                System.err.format("Exception occurred trying to read '%s' \n", dcoff_filename);
-                e.printStackTrace();
-            }
-
-
-            double sscale = reco_constants.MISA_SHIFT_SCALE;
-            double ascale = reco_constants.MISA_ANGLE_SCALE / reco_constants.MRAD;  // to convert in rad
-
-
-            /*
-            *  SINGLE COMPONENT MISALIGNMENT
-            *  This comes on top of the RICH survey and global transformation
-            */
-            /*for (int ila=0; ila<NLAY+1; ila++){
-                for (int ico=0; ico<NCOMPO+1; ico++){
-                    layer_misa_shift[ila][ico] = new Vector3D(0., 0., 0.);
-                    layer_misa_angle[ila][ico] = new Vector3D(0., 0., 0.);
-                }
-            }*/
-
-            String misaco_filename = new String("CALIB_DATA/RICHlayer_misalignment.txt");
-
-            try {
-
-                BufferedReader bf = new BufferedReader(new FileReader(misaco_filename));
-                String currentLine = null;
-
-                while ( (currentLine = bf.readLine()) != null) {    
-
-                    String[] array = currentLine.split(" ");
-                    int isec = Integer.parseInt(array[0]);
-                    int lla = Integer.parseInt(array[1]);
-                    int cco = Integer.parseInt(array[2]);
-
-                    float  dx  = Float.parseFloat(array[3]);
-                    float  dy  = Float.parseFloat(array[4]);
-                    float  dz  = Float.parseFloat(array[5]);
-                    float  thx = Float.parseFloat(array[6]);
-                    float  thy = Float.parseFloat(array[7]);
-                    float  thz = Float.parseFloat(array[8]);
-
-                    int[] ind = {0,0};
-                    if(convert_indexes(lla, cco, ind)){
-
-                        int ila=ind[0];
-                        int ico=ind[1];
-                        if(debugMode>=0)System.out.format("MISA conversion %4d %3d --> %4d %3d \n",lla,cco,ila,ico);
-
-                        // the rotation is assumed to be in the component local ref system
-                        layer_misa_shift[ila][ico].add( new Vector3D( dx*sscale,  dy*sscale,  dz*sscale));
-                        layer_misa_angle[ila][ico].add( new Vector3D(thx*ascale, thy*ascale, thz*ascale));
-
-                        if(debugMode>=0){
-                            if(layer_misa_shift[ila][ico].mag()>0 || layer_misa_angle[ila][ico].mag()>0){
-                                System.out.format("TXT MISA   layer %4d ico %3d  (%4d %3d)  shift %s  angle %s \n", ila,ico,lla,cco, 
-                                   layer_misa_shift[ila][ico].toStringBrief(3), layer_misa_angle[ila][ico].toStringBrief(3));
-                            }
-                        }
-
-                    }else{
-                        System.out.format("Unsupported imisalignment for layer %3d %3d \n",lla,cco);
-                    }
-                }
-
-            } catch (Exception e) {
-
-                System.err.format("Exception occurred trying to read '%s' \n", misaco_filename);
-                e.printStackTrace();
-            }
-        }
-
-
-        if(flag==3){
-
-            /*
-            * AEROGEL OPTCIS
-            */
-
-            String aero_filename = new String("CALIB_DATA/aerogel_passports.txt");
-
-            try {
-
-                BufferedReader bf = new BufferedReader(new FileReader(aero_filename));
-                String currentLine = null;
-
-                while ( (currentLine = bf.readLine()) != null) {    
-
-                    String[] array = currentLine.split(" ");
-                    int idlay = Integer.parseInt(array[1]);
-                    int iaer = Integer.parseInt(array[2]);
-                    
-                    if(debugMode>=1)System.out.format("Read optics for AERO lay %3d  compo %3d", idlay, iaer); 
-                    float refi = Float.parseFloat(array[5]);
-                    float plana = Float.parseFloat(array[11]);
-                    aero_refi[idlay-201][iaer-1] = refi;
-                    aero_plan[idlay-201][iaer-1] = plana;
-                    //aero_refi[idlay-201][iaer-1] = (float) RICHConstants.RICH_AEROGEL_INDEX;
-                    if(debugMode>=1)System.out.format(" n = %8.5f   pla = %8.2f \n", aero_refi[idlay-201][iaer-1], aero_plan[idlay-201][iaer-1]);
-                    
-                }
-
-            } catch (Exception e) {
-
-                System.err.format("Exception occurred trying to read '%s' \n", aero_filename);
-                e.printStackTrace();
-            }
-
-            if(debugMode>=1)System.out.format("initConstants: DONE \n");
-            
-        }
-
-        if(flag==4){
-
-           /*
-            * AEROGEL CALIBRATED OPTICS
-            */
-
-            String chele_filename = new String("CALIB_DATA/aerogel_chele.txt");
-
-            try {
-
-                BufferedReader bf = new BufferedReader(new FileReader(chele_filename));
-                String currentLine = null;
-
-                while ( (currentLine = bf.readLine()) != null) {
-
-                    String[] array = currentLine.split(" ");
-                    int idlay = Integer.parseInt(array[1]);
-                    int iaer  = Integer.parseInt(array[2]);
-                    int iqua  = Integer.parseInt(array[3]);
-
-                    if(debugMode>=1)System.out.format("Read chele for AERO lay %3d  compo %3d quadrant  %3d", idlay, iaer, iqua);
-
-                    int ndir     = Integer.parseInt(array[4]);
-                    float chdir  = Float.parseFloat(array[5]);
-                    float sdir   = Float.parseFloat(array[6]);
-
-                    int nlat     = Integer.parseInt(array[7]);
-                    float chlat  = Float.parseFloat(array[8]);
-                    float slat   = Float.parseFloat(array[9]);
-
-                    int nspe     = Integer.parseInt(array[10]);
-                    float chspe  = Float.parseFloat(array[11]);
-                    float sspe   = Float.parseFloat(array[12]);
-
-                    aero_chele_dir[idlay-201][iaer-1][iqua] = chdir;
-                    aero_chele_lat[idlay-201][iaer-1][iqua] = chlat;
-                    aero_chele_spe[idlay-201][iaer-1][iqua] = chspe;
-
-                    aero_schele_dir[idlay-201][iaer-1][iqua] = sdir;
-                    aero_schele_lat[idlay-201][iaer-1][iqua] = slat;
-                    aero_schele_spe[idlay-201][iaer-1][iqua] = sspe;
-
-                    //aero_refi[idlay-201][iaer-1] = (float) RICHConstants.RICH_AEROGEL_INDEX;
-                    if(debugMode>=1)System.out.format(" n = %8.5f   pla = %8.2f \n", aero_refi[idlay-201][iaer-1], aero_plan[idlay-201][iaer-1]);
-
-                }
-
-            } catch (Exception e) {
-
-                System.err.format("Exception occurred trying to read '%s' \n", chele_filename);
-                e.printStackTrace();
-            }
-
-            if(debugMode>=1)System.out.format("initConstants: DONE \n");
-
-        }
-
-    }
-
-
-    //------------------------------
-    public boolean convert_indexes(int lla, int cco, int[] ind){
-    //------------------------------
-
-        int[] lateral_compo = {11,5,6,9,10,7,8};
-
-        /*
-        *  Aerogel
-        */
-	if(lla==0 && cco==0){ind[0]=lla; ind[1]=cco; return true;}
-	if(lla>=201 && lla<=204 && cco==0){ind[0]=lla-200; ind[1]=cco; return true;}
-        if(lla==301 && cco>0 && cco<=7) {ind[0]=lateral_compo[cco-1]; ind[1]=0; return true;}
-        if(lla==302){
-            if(cco==0){ind[0]=12; ind[1]=0; return true;}
-            if(cco>0 && cco<11){ind[0]=12; ind[1]=cco; return true;}
-        }
-        if(lla==401 && cco==0){ind[0]=13; ind[1]=cco; return true;}
-
-        return false;
     }
 
 
@@ -1039,7 +525,7 @@ public class RICHTool{
         double ang = Math.acos(nomi_n.dot(real_n));
         Vector3D rota_n = dir.multiply(ang);
 
-        double mrad = RICHConstants.MRAD;
+        double mrad = RICHGeoConstants.MRAD;
 
         rich_survey_shift = diff_b.clone();  
         rich_survey_angle = rota_n.clone();
@@ -1127,6 +613,7 @@ public class RICHTool{
         }
 
     }
+
 
     //------------------------------
     public void init_RICHLayers(int iflag){
@@ -1227,25 +714,25 @@ public class RICHTool{
 
             generate_TrackingPlane(ilay);
 
-            if(reco_constants.DO_MISALIGNMENT==1)misalign_TrackingPlane(ilay);
+            if(DO_MISALIGNMENT==1)misalign_TrackingPlane(ilay);
 
             store_TrackingPlane(ilay);
 
         }
 
         
-        if(iflag>0){
-            /*
-            *  Generate Pixel map on the misaligned MAPMT plane
-            */
-            RICHLayer layer = get_Layer("mapmts");
-            List<Integer> compo_list = layer.get_CompoList();
-            Shape3D compo_misa = layer.get_TrackingSurf();
-            generate_Pixel_Map(layer.get_id(), 0, compo_misa, compo_list);
-
-            if(debugMode>=1)show_Shape3D(compo_misa, null, "CC");
-            if(debugMode>=1)show_RICH("Real RICH Geometry", "RR");
-        }
+//        if(iflag>0){
+//            /*
+//            *  Generate Pixel map on the misaligned MAPMT plane
+//            */
+//            RICHLayer layer = get_Layer("mapmts");
+//            List<Integer> compo_list = layer.get_CompoList();
+//            Shape3D compo_misa = layer.get_TrackingSurf();
+//            generate_Pixel_Map(layer.get_id(), 0, compo_misa, compo_list);
+//
+//            if(debugMode>=1)show_Shape3D(compo_misa, null, "CC");
+//            if(debugMode>=1)show_RICH("Real RICH Geometry", "RR");
+//        }
 
     }
 
@@ -1314,32 +801,6 @@ public class RICHTool{
 
     }
 
-
-    //------------------------------
-    public Vector3d GetPixelCenter(int ipmt, int anode){
-    //------------------------------
-
-        Vector3d Vertex = richfactory.GetPhotocatode(ipmt).getVertex(2);
-        Vector3d VPixel = Vertex.plus(MAPMTpixels.GetPixelCenter(anode));
-        //System.out.format("Std  vtx %8.3f %8.3f %8.3f \n",Vertex.x, Vertex.y, Vertex.z);
-        return new Vector3d (VPixel.x, -VPixel.y, VPixel.z);
-
-    }
-
-
-    //------------------------------
-    public Vector3d get_Pixel_Center(int ipmt, int anode){
-    //------------------------------
-
-        int ilay = 12;
-        Face3D compo_face = get_Layer(ilay).get_CompoFace(ipmt-1, 0);
-        Vector3d Vertex = toVector3d( compo_face.point(1) );
-        //System.out.format("Misa vtx %8.3f %8.3f %8.3f \n",Vertex.x, Vertex.y, Vertex.z);
-        //System.out.println(MAPMTpixels.GetPixelCenter(anode));
-        Vector3d VPixel = Vertex.plus(MAPMTpixels.GetPixelCenter(anode));
-        return new Vector3d (VPixel.x, -VPixel.y, VPixel.z);
-
-    }
 
     //------------------------------
     public Shape3D build_GlobalPlane(Shape3D plane, Vector3D orient) {
@@ -1429,14 +890,14 @@ public class RICHTool{
 
         Vector3D plane_norm = orient;
         Vector3D guess_norm = toVector3D(get_Shape3D_Normal(guess_one));
-        double ang = guess_norm.angle(plane_norm)*RICHConstants.RAD;
+        double ang = guess_norm.angle(plane_norm)*RICHGeoConstants.RAD;
 
         if(debugMode>=1){
             guess_one.show();
             System.out.format("Guess one normal %s --> %7.2f \n",guess_norm.toStringBrief(2), ang*57.3);
             guess_two.show();
             Vector3D other_norm = toVector3D(get_Shape3D_Normal(guess_two));
-            double other_ang = other_norm.angle(plane_norm)*RICHConstants.RAD;
+            double other_ang = other_norm.angle(plane_norm)*RICHGeoConstants.RAD;
             System.out.format("Guess two normal %s --> %7.2f \n",other_norm.toStringBrief(2), other_ang*57.3);
         }
 
@@ -1670,7 +1131,7 @@ public class RICHTool{
         /*
         *  To account for SURVEY
         */
-        if(reco_constants.APPLY_SURVEY==1){
+        if(APPLY_SURVEY==1){
             if(debugMode>=1)System.out.format(" --> SURVEY %s %s \n", toString(rich_survey_shift), toString(rich_survey_angle));
 
             misalign_Element( layer.get_GlobalSurf(), survey_frame, rich_survey_angle, rich_survey_shift);
@@ -1784,7 +1245,7 @@ public class RICHTool{
         *  Select the pivot for the RICH rotations
         */
         if(layer.is_mapmt()) {
-            if(reco_constants.MISA_PMT_PIVOT==1) rich_frame.set_bref(layer.get_SurfBary());
+            if(MISA_PMT_PIVOT==1) rich_frame.set_bref(layer.get_SurfBary());
             if(debugMode>=1)System.out.format("RICH PIVOT %s \n",rich_frame.bref().toStringBrief(2));
         }
 
@@ -1861,62 +1322,7 @@ public class RICHTool{
            
     }
  
-    //------------------------------
-    public void generate_Pixel_Map(int ilay, int ico, Shape3D compo_plane, List<Integer> compo_list) {
-    //------------------------------
 
-        int debugMode = 0;
-
-        RICHLayer layer = get_Layer(ilay);
-        if(layer.is_mapmt()){
-
-            if(debugMode>=1){
-                System.out.format("------------------------\n");
-                System.out.format("Generate pixel map for Layer %d %s\n", ilay, get_Layer(ilay).get_Name());
-                System.out.format("------------------------\n");
-            }
-
-            int found=0;
-            Vector3d downversor   = null;
-            Vector3d rightversor  = null;
-            Vector3d vertex       = null;
-            for(int ifa=0; ifa<compo_plane.size(); ifa++){
-                if(compo_list.get(ifa)==ico){
-                    if(debugMode>=1){ System.out.format("  --> ifa %4d ", ifa); dump_Face( compo_plane.face(ifa) ); }
-                    if(found==0){
-                        Vector3d vp0 = toVector3d( compo_plane.face(ifa).point(0) );
-                        Vector3d vp1 = toVector3d( compo_plane.face(ifa).point(1) );
-                        Vector3d vp2 = toVector3d( compo_plane.face(ifa).point(2) );
-                        downversor   = (vp0.minus(vp1)).normalized();
-                        rightversor  = (vp2.minus(vp1).normalized());
-                        vertex       = new Vector3d(vp1);
-                        if(debugMode>=1){
-                            System.out.format("MAPMT ico %4d  ifa %4d \n",ico, ifa); 
-                            System.out.format("vtx0  %s \n",toString(vp0));  
-                            System.out.format("vtx1  %s \n",toString(vp1));  
-                            System.out.format("vtx2  %s \n",toString(vp2));  
-                            System.out.format("down  %s \n",toString(downversor));  
-                            System.out.format("right %s \n",toString(rightversor));  
-                        }
-                        found++;
-                    }
-                }
-            }
-
-            if(downversor!=null && rightversor!= null) {
-                MAPMTpixels = new RICHPixel(new Vector3d(0.,0.,0.), downversor, rightversor);
-                if(debugMode>=1){
-                    MAPMTpixels.show_Pixels( vertex );
-                    vertex = toVector3d( layer.get_CompoFace(5,0).point(1) );
-                    MAPMTpixels.show_Pixels( vertex );
-                    vertex = toVector3d( layer.get_CompoFace(363,0).point(1) );
-                    MAPMTpixels.show_Pixels( vertex );
-                    vertex = toVector3d( layer.get_CompoFace(390,0).point(1) );
-                    MAPMTpixels.show_Pixels( vertex );
-                }
-            }
-        }
-    }
 
     //------------------------------
     public Shape3D generate_Nominal_Plane(int ilay, int ico){
@@ -2076,7 +1482,7 @@ public class RICHTool{
         Vector3D norm2 = half2.normal().asUnit();
         Shape3D guess_one = new Shape3D(half1, half2);
         Vector3D norm_one = half1.normal().asUnit();
-        double ang_one = norm_one.angle(vinside)*RICHConstants.RAD;
+        double ang_one = norm_one.angle(vinside)*RICHGeoConstants.RAD;
 
         Triangle3D half3 = new Triangle3D( extre3, extre2, extre1);
         Triangle3D half4 = new Triangle3D( extre3, extre4, extre2);
@@ -2084,7 +1490,7 @@ public class RICHTool{
         Vector3D norm4 = half4.normal().asUnit();
         Shape3D guess_two = new Shape3D(half3, half4);
         Vector3D norm_two = half3.normal().asUnit();
-        double ang_two = norm_two.angle(vinside)*RICHConstants.RAD;
+        double ang_two = norm_two.angle(vinside)*RICHGeoConstants.RAD;
 
         if(debugMode>=1){
             System.out.format("Look for Nominal plane %3d ico %3d\n",ilay,ico);
@@ -2116,158 +1522,7 @@ public class RICHTool{
         return aero_refi[ila][ico];
 
     }
-
-
-    //------------------------------
-    public double get_sChElectron(int ila, int ico, int iqua, int irefle) {
-    //------------------------------
-
-        if(get_Constants().USE_ELECTRON_ANGLES==1){
-            if(irefle==0){
-                if(aero_schele_dir[ila][ico][iqua]>0){ 
-                    return aero_schele_dir[ila][ico][iqua];
-                }else{
-                    if(aero_schele_lat[ila][ico][iqua]>0){ 
-                        return aero_schele_lat[ila][ico][iqua];
-                    }else{
-                        return aero_schele_spe[ila][ico][iqua];
-                    }
-                }
-            }
-            if(irefle==1){
-                if(aero_schele_lat[ila][ico][iqua]>0){ 
-                    return aero_schele_lat[ila][ico][iqua];
-                }else{
-                    if(aero_schele_dir[ila][ico][iqua]>0){ 
-                        return aero_schele_dir[ila][ico][iqua];
-                    }else{
-                        return aero_schele_spe[ila][ico][iqua];
-                    }
-                }
-            }
-            if(irefle==2){
-                if(aero_schele_spe[ila][ico][iqua]>0){ 
-                    return aero_schele_spe[ila][ico][iqua];
-                }else{
-                    if(aero_schele_dir[ila][ico][iqua]>0){ 
-                        return aero_schele_dir[ila][ico][iqua];
-                    }else{
-                        return aero_schele_lat[ila][ico][iqua];
-                    }
-                }
-            }
-        }
-        return 0.0;
-    }
- 
-
-    //------------------------------
-    public double get_PixelGain(int ipmt, int ich) { return pixel_gain[ipmt][ich]; }
-    //------------------------------
-
-    //------------------------------
-    public double get_PixelEff(int ipmt, int ich) { return pixel_eff[ipmt][ich]; }
-    //------------------------------
-
-    //------------------------------
-    public int get_PixelFlag(int ipmt, int ich) { return pixel_flag[ipmt][ich]; }
-    //------------------------------
-
-    //------------------------------
-    public double get_PixelMtime(int ipmt, int ich) { return pixel_mtime[ipmt][ich]; }
-    //------------------------------
-
-    //------------------------------
-    public double get_PixelStime(int ipmt, int ich) { return pixel_stime[ipmt][ich]; }
-    //------------------------------
-
-    //------------------------------
-    public double get_ChElectron(int ila, int ico, int iqua, int irefle) {
-    //------------------------------
- 
-        if(get_Constants().USE_ELECTRON_ANGLES==1){
-            if(irefle==0){
-                if(aero_chele_dir[ila][ico][iqua]>0){ 
-                    return aero_chele_dir[ila][ico][iqua];
-                }else{
-                    if(aero_chele_lat[ila][ico][iqua]>0){ 
-                        return aero_chele_lat[ila][ico][iqua];
-                    }else{
-                        return aero_chele_spe[ila][ico][iqua];
-                    }
-                }
-            }
-            if(irefle==1){
-                if(aero_chele_lat[ila][ico][iqua]>0){ 
-                    return aero_chele_lat[ila][ico][iqua];
-                }else{
-                    if(aero_chele_dir[ila][ico][iqua]>0){ 
-                        return aero_chele_dir[ila][ico][iqua];
-                    }else{
-                        return aero_chele_spe[ila][ico][iqua];
-                    }
-                }
-            }
-            if(irefle==2){
-                if(aero_chele_spe[ila][ico][iqua]>0){ 
-                    return aero_chele_spe[ila][ico][iqua];
-                }else{
-                    if(aero_chele_dir[ila][ico][iqua]>0){ 
-                        return aero_chele_dir[ila][ico][iqua];
-                    }else{
-                        return aero_chele_lat[ila][ico][iqua];
-                    }
-                }
-            }
-        }
-        return 0.0;
-
-    }
-
-
-    //------------------------------
-    public double getPMTtimeoff(int ipmt, int ich){
-    //------------------------------
- 
-        return -1*pmt_timeoff[ipmt-1][ich-1];
-
-    }
-
-    //------------------------------
-    public double getPMTtimewalk(int ipmt, int ich){
-    //------------------------------
- 
-        return pmt_timewalk[ipmt-1][ich-1];
-
-    }
-
-
-    //------------------------------
-    public void init_GlobalPixelGeo(){
-    //------------------------------
-
-        int debugMode = 0;
-        for(int irow=0; irow<NROW; irow++){ // loop on rows
-
-            for(int ipmt=pfirst[irow];ipmt<=plast[irow];ipmt++){ // loop on pmts
-
-                // pixel 1 coordinate
-		if(irow<23){
-	           nyp[ipmt-1]=16+irow*8;
-		   nxp[ipmt-1]=15+(28+(plast[irow]-pfirst[irow]+1)-(ipmt-pfirst[irow])*2)*4; 
-		}else{
-                   int yoff = (int) (23*8+(32-20*25.4)/6.5);
-	           nyp[ipmt-1]=16+yoff-(irow-24)*8;
-		   nxp[ipmt-1]=15+(28-(plast[irow]-pfirst[irow]+1)+(ipmt-pfirst[irow])*2)*4+8; 
-		}
-
-		if(debugMode>=1) System.out.println("PMT "+ipmt+" Nx "+nxp[ipmt-1]+" Ny "+nyp[ipmt-1]);
-
-	    }
-	}
-
-     }
-
+    
 
     //------------------------------
     public int get_LayerNumber(String slay){
@@ -2459,14 +1714,6 @@ public class RICHTool{
         Line3D lout = new Line3D(toPoint3D(lin.origin()), toPoint3D(lin.end()));
         return lout;
      }
-
-     //------------------------------
-     public Line3D toLine3D(RICHRay ray) {
-     //------------------------------
-        Line3D lout = new Line3D(ray.origin(), ray.end());
-        return lout;
-     }
-
 
     //------------------------------
     public void translate_Triangle3D(Triangle3D tri, Vector3d shift) {
@@ -2995,417 +2242,7 @@ public class RICHTool{
     }
 
 
-    // ----------------
-    public Vector3D Reflection(Vector3D vector1, Vector3D normal) {
-    // ----------------
 
-        int debugMode = 0;
-        Vector3D vin = vector1.asUnit();
-        Vector3D vnorm = normal.asUnit();
 
-        double cosI  =  vin.dot(vnorm); 
-        if(debugMode>=1)System.out.format("Vector in %s  vnorm %s cosI %7.3f \n ",vin.toStringBrief(3),vnorm.toStringBrief(3),cosI);
-        if (cosI > 0) {
-            if(debugMode>=1)System.out.format("ATT: Mirror normal parallel to impinging ray %7.3f \n",cosI);
-            vnorm.scale(-1.0);
-        }
-
-        double refle = 2*(vin.dot(vnorm));
-        Vector3D vout = vin.sub(vnorm.multiply(refle));
-
-        if(debugMode>=1){
-            System.out.format("Mirror normal %s\n",normal.toStringBrief(3));
-            System.out.format("Reflected versor %s\n", vout.asUnit().toStringBrief(3));
-        }
-
-        return vout.asUnit();
-    }
-
-    // ----------------
-    public Vector3D Transmission2(Vector3D vector1, Vector3D normal, double n_1, double n_2) {
-    // ----------------
-
-        int debugMode = 0;
-        double rn = n_1 / n_2;
-
-        Vector3D vin = vector1.asUnit();
-        Vector3D vnorm = normal.asUnit();
-
-        double cosI  =  vin.dot(vnorm); 
-        if(debugMode>=1)System.out.format("Vector in %s  vnorm %s cosI %7.3f \n ",vin.toStringBrief(3),vnorm.toStringBrief(3),cosI);
-        if (cosI < 0) {
-            if(debugMode>=1)System.out.format("ATT: Mirror normal parallel to impinging ray %7.3f \n",cosI);
-            vnorm.scale(-1.0);
-        }
-        if(debugMode>=1)System.out.format("Vector in %s  vnorm %s cosI %7.3f \n ",vin.toStringBrief(3),vnorm.toStringBrief(3),cosI);
-
-        Vector3D vrot = (vnorm.cross(vin)).asUnit();
- 
-        double angi = Math.acos(vin.dot(vnorm)) ;
-        double ango = Math.asin( rn * Math.sin(angi));
-
-        Quaternion q = new Quaternion(ango, toVector3d(vrot));
-
-        Vector3D vout = toVector3D(q.rotate(toVector3d(vnorm)));
-
-        if(debugMode>=1){
-            System.out.format(" vin   %s \n", vin.toStringBrief(3));
-            System.out.format(" vnorm %s \n", vnorm.toStringBrief(3)); 
-            System.out.format(" angles %7.3f %7.3f \n",angi*57.3, ango*57.3);
-            System.out.format(" vout  %s \n", vout.toStringBrief(3)); 
-        }
-
-        return vout;
-
-    }
- 
-    // ----------------
-    public RICHRay OpticalRotation(RICHRay rayin, RICHIntersection intersection) {
-    // ----------------
-
-        int debugMode = 0;
-        Point3D vori = rayin.origin();
-        Vector3D inVersor = rayin.direction().asUnit();
-        Vector3D newVersor = new Vector3D(0.0, 0.0, 0.0);
-        RICHRay rayout = null;
-        int type = 0;
- 
-        if(debugMode>=1)System.out.format("Ray for %3d %3d \n",intersection.get_layer(), intersection.get_component());
-        //RICHComponent component = opticlayers.get(intersection.get_layer()).get(intersection.get_component());
-        RICHLayer layer = opticlayers.get(intersection.get_layer());
-
-        if(layer.is_optical()==true){
-                
-            if(debugMode>=1)System.out.format("Ray rotation at Optical compo %3d %3d  xyz %s \n", intersection.get_layer(), intersection.get_component(), vori.toStringBrief(2));
-            Vector3D vnorm = intersection.get_normal();
-            if(vnorm != null ){
-                if(layer.is_mirror()==true){
-             
-                    newVersor = Reflection(inVersor, vnorm);
-                    type=10000+intersection.get_layer()*100+intersection.get_component()+1;
-                    if(debugMode>=1)System.out.format(" Reflection at mirror surface norm %s \n", vnorm.toStringBrief(3));
-
-                }else{
-
-                    newVersor = Transmission2(inVersor, vnorm, intersection.get_nin(), intersection.get_nout());
-                    type=20000+intersection.get_layer()*100+intersection.get_component()+1;
-                    if(debugMode>=1){
-                        System.out.format(" Refraction at surface boundary norm %s \n", vnorm.toStringBrief(3));
-                        System.out.format(" norm in %s %7.4f \n",vnorm.toStringBrief(3), vnorm.costheta());
-                        System.out.format(" vers in %s %7.4f \n",inVersor.toStringBrief(3), inVersor.costheta());
-                        System.out.format(" vers ou %s %7.4f \n",newVersor.toStringBrief(3), newVersor.costheta());
-                    }
-                }
-            }
-
-            if(debugMode>=1)System.out.format(" Versor in %s   --> out %s \n",inVersor.toStringBrief(3), newVersor.toStringBrief(3)); 
-        }
-
-        rayout = new RICHRay(vori, newVersor.multiply(200));
-        rayout.set_type(type);
-        return rayout;
-
-    }
-
-    // ----------------
-    public ArrayList<RICHRay> RayTrace(Vector3d emission, int orilay, int orico, Vector3d vlab) {
-    // ---------------- 
-
-        int debugMode = 0;
-
-        RICHLayer layer = get_Layer(orilay);
-        if(debugMode>=1)System.out.format("Raytrace gets refractive index from CCDB database %8.5f \n",layer.get(orico).get_index());
-        return RayTrace(emission, orilay, orico, vlab, layer.get(orico).get_index());
-
-    }
-
-    // ----------------
-    public ArrayList<RICHRay> RayTrace(Vector3d emission, int orilay, int orico, Vector3d vlab, double naero) {
-    // ---------------- 
-    // return the hit position on the PMT plane of a photon emitted at emission with direction vlab
-
-        int debugMode = 0;
-        ArrayList<RICHRay> raytracks = new ArrayList<RICHRay>();
-
-        Point3D emi = toPoint3D(emission);
-        Vector3D vdir = toVector3D(vlab);
-
-        RICHRay lastray = new RICHRay(emi, vdir.multiply(200));
-        if(debugMode>=1) {
-            System.out.format(" --------------------------- \n");
-            System.out.format("Raytrace photon ori %s  olay %3d  oco %3d  dir %s \n",emi.toStringBrief(2),orilay,orico,vdir.toStringBrief(3)); 
-            System.out.format(" --------------------------- \n");
-        }
-
-        RICHLayer layer = get_Layer(orilay);
-        if(layer==null)return null;
-
-        RICHIntersection first_intersection = null;
-        if(reco_constants.DO_CURVED_AERO==1){
-            first_intersection = layer.find_ExitCurved(lastray.asLine3D(), orico);
-        }else{
-            first_intersection = layer.find_Exit(lastray.asLine3D(), orico);
-        }
-        if(first_intersection==null)return null;   
-
-        if(debugMode>=1){
-            System.out.format(" first inter : ");
-            first_intersection.showIntersection();
-        }
-
-        Point3D new_pos = first_intersection.get_pos();
-        RICHRay oriray = new RICHRay(emi, new_pos);
-
-        /* rewrite the refractive index to be consistent with photon theta
-           only valid for initial aerogel
-           the rest of components take ref index from CCDB database 
-        */
-        //oriray.set_refind(layer.get(orico).get_index());
-        first_intersection.set_nin((float) naero);
-        oriray.set_refind(naero);
-        raytracks.add(oriray);
-
-        RICHRay rayin = new RICHRay(new_pos, oriray.direction().multiply(200));
-        lastray = OpticalRotation(rayin, first_intersection);
-        lastray.set_refind(RICHConstants.RICH_AIR_INDEX);
-        RICHIntersection last_intersection = first_intersection;
-
-        if(debugMode>=1){
-            System.out.format(" add first ray : ");
-            oriray.showRay();
-            System.out.format(" get rotated ray : ");
-            lastray.showRay();
-        }
-
-        int jj = 1;
-        int front_nrefl = 0;
-        boolean detected = false;
-        boolean lost = false;
-        while( detected == false && lost == false && raytracks.size()<10){
-
-            Point3D last_ori  = lastray.origin();
-            Point3D new_hit = null;
-            RICHIntersection new_intersection = null;
-            if(debugMode>=1)System.out.format(" ray-tracking step %d \n",jj);
-
-            if(last_intersection.get_layer()<4){
-  
-                // planar mirrors
-                RICHIntersection test_intersection = get_Layer("mirror_bottom").find_Entrance(lastray.asLine3D(), -1);
-                if(test_intersection==null)test_intersection = get_Layer("mirror_left_L1").find_Entrance(lastray.asLine3D(), -1);
-                if(test_intersection==null)test_intersection = get_Layer("mirror_right_L1").find_Entrance(lastray.asLine3D(), -1);
-                if(test_intersection==null)test_intersection = get_Layer("mirror_left_L2").find_Entrance(lastray.asLine3D(), -1);
-                if(test_intersection==null)test_intersection = get_Layer("mirror_right_L2").find_Entrance(lastray.asLine3D(), -1);
-                if(test_intersection!=null){
-                    if(debugMode>=1){
-                        System.out.format(" test planar (z %7.2f, step %7.2f) : ",last_ori.z(), test_intersection.get_pos().distance(last_ori));
-                        test_intersection.showIntersection();
-                    }
-                    //if(test_intersection.get_pos().distance(last_ori)>RICHConstants.PHOTON_DISTMIN_TRACING)new_intersection = test_intersection;
-                    new_intersection = test_intersection;
-                }else{
-                    if(debugMode>=1)System.out.format(" no lateral mirror intersection \n");
-                }
-
-                // shperical mirrors
-                if(lastray.direction().costheta()>0){
-                    test_intersection = get_Layer("mirror_sphere").find_EntranceCurved(lastray.asLine3D(), -1);
-                    
-                    if(test_intersection!=null){
-                        if(debugMode>=1){
-                            System.out.format(" test sphere (z %7.2f, step %7.2f) : ",last_ori.z(), test_intersection.get_pos().distance(last_ori));
-                            test_intersection.showIntersection();
-                        }
-                        //if(test_intersection.get_pos().distance(last_ori)>RICHConstants.PHOTON_DISTMIN_TRACING){
-                            if(new_intersection==null || (new_intersection!=null && test_intersection.get_pos().z()<new_intersection.get_pos().z())) {
-                                new_intersection = test_intersection;
-                            }
-                        //}
-                    }else{
-                        if(debugMode>=1)System.out.format(" no sphere intersection \n");
-                    }
-
-                    RICHIntersection pmt_inter = get_Layer("mapmts").find_Entrance(lastray.asLine3D(), -1);
-                    if(pmt_inter!=null) {
-                        Point3D test_hit = pmt_inter.get_pos(); 
-                        //if(test_hit.distance(last_ori)>RICHConstants.PHOTON_DISTMIN_TRACING){
-                            new_hit=test_hit;
-                            if(debugMode>=1)System.out.format(" test PMT : Hit %s \n",new_hit.toStringBrief(2));
-                        //}else{
-                            //if(debugMode>=1)System.out.format(" too far PMT plane intersection \n");
-                        //}
-                    }else{
-                        if(debugMode>=1)System.out.format(" no PMT plane intersection \n");
-                    }
-                }else{
-                    test_intersection = get_Layer("mirror_front_B1").find_Entrance(lastray.asLine3D(), -1);
-                    if(test_intersection==null)test_intersection = get_Layer("mirror_front_B2").find_Entrance(lastray.asLine3D(), -1);
-                    if(test_intersection!=null){
-                        if(debugMode>=1){
-                            System.out.format(" test front (z %7.2f, step %7.2f) : ",last_ori.z(), test_intersection.get_pos().distance(last_ori));
-                            test_intersection.showIntersection();
-                        }
-                        //if(test_intersection.get_pos().distance(last_ori)>RICHConstants.PHOTON_DISTMIN_TRACING)new_intersection = test_intersection; 
-                        new_intersection = test_intersection;
-                        front_nrefl++;
-                    }else{
-                        if(debugMode>=1)System.out.format(" no front mirror intersection \n");
-                    }
-                }
-
-            }
-
-            if(new_hit!=null){
-                if(new_intersection==null || new_hit.distance(last_ori) <= new_intersection.get_pos().distance(last_ori)) {
-                    detected=true;
-                    if(debugMode>=1) System.out.format(" found PMT hit %s  dist %6.2f \n", new_hit.toStringBrief(2), new_hit.distance(last_ori));
-                }
-            }
-            if(front_nrefl>1){
-                lost = true; 
-                new_hit=new_intersection.get_pos();
-                if(debugMode>=1) System.out.format(" double front reflection: stop at front %s \n",toString(new_hit));
-            }
-            if(new_hit==null && new_intersection==null){
-                lost = true; 
-                Point3D point = new Point3D(0.0, 0.0, 0.0);;
-                new_hit = new Point3D(lastray.end());
-                Plane3D plane = toTriangle3D(get_Layer(get_LayerNumber("mapmts")).get_Face(0)).plane();
-                if(plane.intersection(lastray.asLine3D(), point)==1){ 
-                    double vers = lastray.direction().costheta();
-                    double Delta_z = point.z()-lastray.origin().z();
-                    if(debugMode>=1) System.out.format(" forced stop at PMT plane: Delta_z %7.3f vers %7.3f \n",Delta_z, vers);
-                    if(Delta_z*vers>0){
-                        new_hit=point;
-                        if(debugMode>=1) System.out.format(" take PMT plane hit %s \n", new_hit.toStringBrief(2));
-                    }else{
-                        if(debugMode>=1) System.out.format(" no Delta_z on PMT plane: take last ray end %s \n", new_hit.toStringBrief(2));
-                    }
-                }else{
-                    if(debugMode>=1) System.out.format(" no hit on PMT plane: take last ray end %s \n", new_hit.toStringBrief(2));
-                }
-            }
-
-            if(lost || detected){
-                if(debugMode>=1 && lost) System.out.format("LOST! stop ray-tracing \n");
-                if(debugMode>=1 && detected) System.out.format("DETECTED! stop ray-tracing \n");
-
-                RICHRay newray = new RICHRay(last_ori, new_hit);
-                newray.set_type(lastray.get_type());
-                newray.set_refind((float) RICHConstants.RICH_AIR_INDEX);
-                if(detected)newray.set_detected();
-                raytracks.add(newray);
-                if(debugMode>=1){
-                    System.out.format(" --> Add last ray (%7.4f) : ", RICHConstants.RICH_AIR_INDEX);
-                    newray.showRay();
-                }
-
-            }else{
-
-                RICHRay newray = new RICHRay(last_ori, new_intersection.get_pos());
-                newray.set_refind(new_intersection.get_nin());
-                newray.set_type(lastray.get_type());
-                raytracks.add(newray);
-
-                // new ray starting at intersection, to be rotated
-                rayin = new RICHRay(new_intersection.get_pos(), newray.direction().multiply(200));
-                lastray = OpticalRotation(rayin, new_intersection);
-                lastray.set_refind(new_intersection.get_nout());
-
-                if(debugMode>=1){
-                    System.out.format(" -->  Add new ray (%7.4f) : ",new_intersection.get_nin());
-                    newray.showRay();
-                    System.out.format(" -->  Get rotated ray (%7.4f) : ",new_intersection.get_nout());
-                    lastray.showRay();
-                }
-
-            }
-            jj++;
-
-        }
-
-        if(debugMode>=1) System.out.format(" --------------------------- \n");
-        //if(detected==true)return raytracks;
-        return raytracks;
-        //return null;
-   }
-
-
-    // ----------------
-    public void init_ProcessTime(){
-    // ----------------
-
-       for(int i=0; i<NTIME; i++){richprocess_time[i] = 0.0; richprocess_ntimes[i]=0;}
-
-    }
-
-    // ----------------
-    public void start_ProcessTime(){
-    // ----------------
-       int debugMode = 0;
-
-       RICH_START_TIME = System.nanoTime();
-       RICH_LAST_TIME = RICH_START_TIME;
-
-       if(debugMode==1)System.out.format("RICH_START_TIME %d \n",RICH_START_TIME);
-    }
-
-    // ----------------
-    public void save_ProcessTime(int iphase){
-    // ----------------
-
-        int debugMode = 0;
-
-        if(iphase>-1 && iphase<NTIME){
-
-            long nanotime = System.nanoTime()-RICH_START_TIME;
-            double dtime = nanotime * 1.0e-6;
-
-            richprocess_time[iphase] += dtime;
-            richprocess_ntimes[iphase] += 1;
-
-            if(debugMode==1)System.out.format("Phase %3d: Save time %3d  %10.4f \n", iphase, richprocess_ntimes[iphase], dtime);
-
-        }
-
-        double interval = (System.nanoTime()-RICH_LAST_TIME)*1e-9;   //seconds
-        if(iphase==0 && interval > reco_constants.SHOW_PROGRESS_INTERVAL) {
-
-            RICH_LAST_TIME = System.nanoTime();
-            dump_ProcessTime();
-        }
-    }
-
-    // ----------------
-    public void dump_ProcessTime(){
-    // ----------------
-
-        String str[] = {" RAW-RICH " ," DC-RICH  ", " HADRONS  ", " ANALYTIC ", " TRACED   ", " WRITE    ", " CLOSE    "};
-
-        for(int i=0; i<NTIME; i++){
-            double time = 0.0;
-            if(richprocess_ntimes[i]>0){
-                int found=-1;
-                for(int j=i-1; j>-1; j--){
-                    if(richprocess_ntimes[j]>0){found=j; break;}
-                }
-                if(found>-1){
-                    time = (richprocess_time[i]/richprocess_ntimes[i]-richprocess_time[found]/richprocess_ntimes[found]);
-                }else{
-                    time = richprocess_time[i]/richprocess_ntimes[i];
-                }
-                System.out.format(" PHASE %3d: %s  average over %6d  time %10.4f ms \n", i, str[i], richprocess_ntimes[i], time);
-            }
-        }
-
-        for(int i=NTIME-1; i>-1; i--){
-            double time = 0.0;
-            if(richprocess_ntimes[i]>0){
-                time = richprocess_time[i]/richprocess_ntimes[i];
-                System.out.format(" PHASE %3d:  TOTAL      average over %6d  time %10.4f ms \n", NTIME, richprocess_ntimes[i], time);
-                break;
-            }
-        }
-    }
 
 }
