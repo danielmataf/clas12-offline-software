@@ -494,7 +494,7 @@
     ]
   },
   {
-    "name" : "AHDC::tdc",
+    "name" : "AHDC::adc",
     "group" : 22200,
     "item" : 12,
     "info": "ADC bank for ALERT",
@@ -502,10 +502,34 @@
       { "name":"superlayer", "type":"B", "info":"superlayer (0..4)"},
       { "name":"layer"     , "type":"B", "info":"layer (0..1)"},
       { "name":"wire"      , "type":"S", "info":"wire number (1..)"},
-      { "name":"order"     , "type":"B", "info":"order: 2 - TDCL , 3 - TDCR"},
-      { "name":"adc"       , "type":"F", "info":"adc value"},
-      { "name":"time"      , "type":"F", "info":"time for the hit"}
+      { "name":"doca"      , "type":"F", "info":"doca value"},
+      { "name":"adc"       , "type":"F", "info":"adc value"}
 
+    ]
+  },
+  {
+    "name" : "ATOF::adc",
+    "group" : 23000,
+    "item" : 12,
+    "info": "ATOF bank for ALERT",
+    "entries":[
+      { "name":"sector", "type":"B", "info":"sector"},
+      { "name":"superlayer"     , "type":"B", "info":"superlayer"},
+      { "name":"layer", "type":"B", "info":"layer"},
+      { "name":"paddle"     , "type":"B", "info":"paddle"},
+      { "name":"adc_front"      , "type":"F", "info":"adc_front value"},
+      { "name":"adc_back"       , "type":"F", "info":"adc_back value"},
+      { "name":"adc_top"       , "type":"F", "info":"adc_top value"},
+      { "name":"tdc_front"      , "type":"F", "info":"tdc_front value"},
+      { "name":"tdc_back"       , "type":"F", "info":"tdc_back value"},
+      { "name":"tdc_top"       , "type":"F", "info":"tdc_top value"},
+      { "name":"time_front"      , "type":"F", "info":"time_front value"},
+      { "name":"time_back"       , "type":"F", "info":"time_back value"},
+      { "name":"time_top"       , "type":"F", "info":"time_top value"},
+      { "name":"E_tot_Front"      , "type":"F", "info":"E_tot_Front value"},
+      { "name":"E_tot_Back"       , "type":"F", "info":"E_tot_Back value"},
+      { "name":"E_tot_Top"       , "type":"F", "info":"E_tot_Top value"},
+      { "name":"totEdep_MC"       , "type":"F", "info":"totEdep_MC value"}
     ]
   }
 ]
