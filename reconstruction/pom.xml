@@ -31,5 +31,6 @@
     <module>mltn</module>
     <module>swaps</module>
     <module>vtx</module>
+    <module>alert</module>
   </modules>
 </project>
