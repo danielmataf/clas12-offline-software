@@ -3,6 +3,44 @@
     "name": "AHDCRec::Track",
     "group": 23000,
     "item": 21,
+    "info": "Reco Tracks",
+    "entries": [
+      {
+        "name": "x",
+        "type": "F",
+        "info": "x position in mm"
+      },
+      {
+        "name": "y",
+        "type": "F",
+        "info": "y position in mm"
+      },
+      {
+        "name": "z",
+        "type": "F",
+        "info": "z position in mm"
+      },
+      {
+        "name": "px",
+        "type": "F",
+        "info": "px in MeV"
+      },
+      {
+        "name": "py",
+        "type": "F",
+        "info": "py in MeV"
+      },
+      {
+        "name": "pz",
+        "type": "F",
+        "info": "pz in MeV"
+      }
+    ]
+  },
+  {
+    "name": "AHDCRec::MC",
+    "group": 23000,
+    "item": 22,
     "info": "MC Tracks",
     "entries": [
       {

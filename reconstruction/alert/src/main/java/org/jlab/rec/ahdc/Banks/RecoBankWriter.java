@@ -2,6 +2,7 @@ package org.jlab.rec.ahdc.Banks;
 
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
+import org.jlab.rec.ahdc.HelixFit.HelixFitObject;
 import org.jlab.rec.ahdc.Hit.Hit;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class RecoBankWriter {
     return bank;
   }
 
-  public DataBank fillAHDCTrackBank(DataEvent event) {
+  public DataBank fillAHDCMCTrackBank(DataEvent event) {
 
     DataBank particle = event.getBank("MC::Particle");
     double x_mc = particle.getFloat("vx", 0);
@@ -40,13 +41,34 @@ public class RecoBankWriter {
     double pz_mc = particle.getFloat("pz", 0) * 1000;
 
     int row = 0;
-    DataBank bank = event.createBank("AHDCRec::Track", row + 1);
+    DataBank bank = event.createBank("AHDCRec::MC", row + 1);
     bank.setFloat("x", row, (float) x_mc);
     bank.setFloat("y", row, (float) y_mc);
     bank.setFloat("z", row, (float) z_mc);
     bank.setFloat("px", row, (float) px_mc);
     bank.setFloat("py", row, (float) py_mc);
     bank.setFloat("pz", row, (float) pz_mc);
+
+    return bank;
+  }
+
+  public DataBank fillAHDCTrackBank(DataEvent event, HelixFitObject ho) {
+
+    double x = ho.get_X0();
+    double y = ho.get_Y0();
+    double z = ho.get_Z0();
+    double px = ho.get_px();
+    double py = ho.get_py();
+    double pz = ho.get_pz();
+
+    int row = 0;
+    DataBank bank = event.createBank("AHDCRec::Track", row + 1);
+    bank.setFloat("x", row, (float) x);
+    bank.setFloat("y", row, (float) y);
+    bank.setFloat("z", row, (float) z);
+    bank.setFloat("px", row, (float) px);
+    bank.setFloat("py", row, (float) py);
+    bank.setFloat("pz", row, (float) pz);
 
     return bank;
   }

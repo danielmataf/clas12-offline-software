@@ -47,12 +47,9 @@ public class AHDCReconstruction extends ReconstructionEngine {
 
     if (event.hasBank("AHDC::adc")) {
 
-      // VI) Write bank -------------------------------------------------------
-      RecoBankWriter writer = new RecoBankWriter();
-      DataBank recoBank = writer.fillAHDCTrackBank(event);
 
-      event.appendBank(recoBank);
-      // ----------------------------------------------------------------------
+      // Output
+      HelixFitObject ho = null;
 
       // I) Read hit
       HitReader hitRead = new HitReader();
@@ -101,32 +98,18 @@ public class AHDCReconstruction extends ReconstructionEngine {
         }
 
         HelixFitJava h = new HelixFitJava();
-        HelixFitObject ho = h.HelixFit(nbofpoint, szPos, 1);
-        // Kalman Filter
-        // Creation d'une helice pour le filtre de Kalman
-
-        // Create a point on the beamline
-        Cluster clus = new Cluster(ho.get_X0(), ho.get_Y0(), ho.get_Z0());
-        track.get_Clusters().add(0, clus);
-
-        // Nombre de points
-        nbofpoint++;
-
-        // szPos[nbofpoint][3] x y z pour chaque point
-        szPos = new double[nbofpoint][3];
-        j = 0;
-        for (Cluster cluster : track.get_Clusters()) {
-          szPos[j][0] = cluster.get_X();
-          szPos[j][1] = cluster.get_Y();
-          szPos[j][2] = cluster.get_Z();
-          j++;
-        }
-
-        HelixFitJava h1 = new HelixFitJava();
-        HelixFitObject ho1 = h1.HelixFit(nbofpoint, szPos, 0);
-
-
+        ho = h.HelixFit(nbofpoint, szPos, 1);
       }
+
+      // VI) Write bank -------------------------------------------------------
+      RecoBankWriter writer = new RecoBankWriter();
+      if (ho != null) {
+        DataBank recoMCBank = writer.fillAHDCMCTrackBank(event);
+        DataBank recoBank = writer.fillAHDCTrackBank(event, ho);
+        event.appendBank(recoMCBank);
+        event.appendBank(recoBank);
+      }
+      // ----------------------------------------------------------------------
     }
     return true;
   }
@@ -135,7 +118,7 @@ public class AHDCReconstruction extends ReconstructionEngine {
 
     double starttime = System.nanoTime();
 
-    String inputFile = "proton_10_100MeV.hipo";
+    String inputFile = "proton_10_100MeV_update2.hipo";
     String outputFile = "output.hipo";
 
     if (new File(outputFile).delete()) System.out.println("output.hipo is delete.");
