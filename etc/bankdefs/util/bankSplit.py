@@ -5,19 +5,20 @@ import sys
 import os
 
 # print usage
-if len(sys.argv)<2:
-   print("usage: bankSplit.py coatjavahipobankfolder (e.g. coatjava/etc/bankdefs/hipo4/)")
-   sys.exit()
+if len(sys.argv) < 2:
+    print("usage: bankSplit.py coatjavahipobankfolder (e.g. coatjava/etc/bankdefs/hipo4/)")
+    sys.exit()
 
 # hipo schema directory
-hipodirectory = sys.argv[1] +  "/"
+hipodirectory = sys.argv[1] + "/"
 os.chdir(hipodirectory)
 
 # single jsons directory
-workdirectory   = "singles/"
+workdirectory = "singles/"
 singledirectory = "full/"
 os.mkdir(workdirectory)
 os.mkdir(workdirectory + singledirectory)
+
 
 # create schema directory
 def create(dirname, banklist):
@@ -32,13 +33,13 @@ def create(dirname, banklist):
 for filename in os.listdir("./"):
     if filename.endswith(".json"):
 
-        #Read JSON data into the datastore variable
+        # Read JSON data into the datastore variable
         print(filename)
         f = open(filename)
         try:
             datastore = json.load(f)
         except:
-            print('Invalid JSON:  '+filename)
+            print('Invalid JSON:  ' + filename)
             sys.exit(1)
         # loop over banks in the json file
         for bank in datastore:
@@ -48,6 +49,7 @@ for filename in os.listdir("./"):
             file.close
 print("Single json files saved in " + workdirectory + singledirectory)
 
+<<<<<<< HEAD
 # these should *always* be kept:
 mc = ["MC::Event", "MC::Header", "MC::Lund", "MC::Particle", "MC::True"]
 tag1 = ["RUN::config", "RAW::epics", "RAW::scaler", "RUN::scaler", "COAT::config", "HEL::flip", "HEL::online"]
@@ -65,7 +67,7 @@ rtpc = ["RTPC::hits","RTPC::tracks"]
 dets = band + rich + rtpc
 
 # additions for the calibration schema: 
-calib =["AHDCRec::Track","BAND::adc","BAND::laser","BAND::tdc","BAND::hits","BAND::rawhits","CND::adc","CND::hits","CND::tdc","CTOF::adc","CTOF::hits","CTOF::tdc","CVTRec::Tracks","ECAL::adc","ECAL::calib","ECAL::clusters","ECAL::peaks","ECAL::tdc","FMT::Hits","FMT::Clusters","FMT::Tracks","FMT::Trajectory","FT::particles","FTCAL::adc","FTCAL::clusters","FTCAL::hits","FTHODO::adc","FTHODO::clusters","FTHODO::hits","FTOF::adc","FTOF::hits","FTOF::tdc","HTCC::adc","HTCC::rec","LTCC::adc","LTCC::clusters","RF::adc","RF::tdc","RICH::tdc","RICH::hits","RICH::hadCher","RICH::hadrons","RICH::photons","RICH::ringCher","RTPC::adc","RTPC::hits","RTPC::tracks","RUN::rf","RUN::trigger","TimeBasedTrkg::TBCrosses","TimeBasedTrkg::TBHits","TimeBasedTrkg::TBSegments","TimeBasedTrkg::TBSegmentTrajectory","TimeBasedTrkg::TBTracks","TimeBasedTrkg::Trajectory"]
+calib =["AHDCRec::MC","AHDCRec::Track", "BAND::adc","BAND::laser","BAND::tdc","BAND::hits","BAND::rawhits","CND::adc","CND::hits","CND::tdc","CTOF::adc","CTOF::hits","CTOF::tdc","CVTRec::Tracks","ECAL::adc","ECAL::calib","ECAL::clusters","ECAL::peaks","ECAL::tdc","FMT::Hits","FMT::Clusters","FMT::Tracks","FMT::Trajectory","FT::particles","FTCAL::adc","FTCAL::clusters","FTCAL::hits","FTHODO::adc","FTHODO::clusters","FTHODO::hits","FTOF::adc","FTOF::hits","FTOF::tdc","HTCC::adc","HTCC::rec","LTCC::adc","LTCC::clusters","RF::adc","RF::tdc","RICH::tdc","RICH::hits","RICH::hadCher","RICH::hadrons","RICH::photons","RICH::ringCher","RTPC::adc","RTPC::hits","RTPC::tracks","RUN::rf","RUN::trigger","TimeBasedTrkg::TBCrosses","TimeBasedTrkg::TBHits","TimeBasedTrkg::TBSegments","TimeBasedTrkg::TBSegmentTrajectory","TimeBasedTrkg::TBTracks","TimeBasedTrkg::Trajectory"]
 
 # additions for the monitoring schema:
 mon = ["BMT::adc","BMTRec::Clusters","BMTRec::Crosses","BMTRec::Hits","BMTRec::LayerEffs","BST::adc","BSTRec::Clusters","BSTRec::Crosses","BSTRec::Hits","BSTRec::LayerEffs","CND::clusters","CVTRec::Trajectory","ECAL::hits","FMT::adc","HEL::adc","HitBasedTrkg::HBTracks","RAW::vtp"]
@@ -84,4 +86,3 @@ create("dsthb/", set(dsthb))
 create("calib/", set(calib))
 create("mon/",  set(mon))
 #create("ebrerun/", setebrerun))
-
