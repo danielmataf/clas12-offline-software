@@ -49,7 +49,6 @@ for filename in os.listdir("./"):
             file.close
 print("Single json files saved in " + workdirectory + singledirectory)
 
-<<<<<<< HEAD
 # these should *always* be kept:
 mc = ["MC::Event", "MC::Header", "MC::Lund", "MC::Particle", "MC::True"]
 tag1 = ["RUN::config", "RAW::epics", "RAW::scaler", "RUN::scaler", "COAT::config", "HEL::flip", "HEL::online"]
