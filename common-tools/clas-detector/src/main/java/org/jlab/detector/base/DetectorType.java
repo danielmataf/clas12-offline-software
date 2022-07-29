@@ -27,6 +27,7 @@ public enum DetectorType {
     RTPC      (19, "RTPC"),
     HEL       (20, "HEL"),
     BAND      (21, "BAND"),
+    RASTER    (22, "RASTER"),
     AHDC      (22, "AHDC"),
     ATOF      (23, "ATOF"),
     TARGET    (100, "TARGET"),
@@ -49,6 +50,7 @@ public enum DetectorType {
         detectorId = id;
         detectorName = name;
     }
+    
     /**
      * Returns the name of the detector.
      * @return the name of the detector
